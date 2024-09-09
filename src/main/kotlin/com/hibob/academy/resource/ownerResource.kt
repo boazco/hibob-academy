@@ -13,24 +13,47 @@ import org.springframework.web.bind.annotation.RequestBody
 class OwnerResource {
 
     @POST
-    @Path("/{Id}/type")
+    @Path("/{Id}/type/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    fun createPet(@RequestBody pets: Pets): Response {
+    fun createPetV1(@RequestBody pets: Pets): Response {
+        Response.status(Response.Status.OK).build()
+        return Response.ok("POST OK").build()
+    }
+
+    @POST
+    @Path("/{Id}/type/v2")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun createPetV2(@RequestBody pets: Pets): Response {
         Response.status(Response.Status.OK).build()
         return Response.ok("POST OK").build()
     }
 
     @GET
-    @Path("/{Id}/type")
-    fun getPetType(@PathParam("Id") id: String): Response {
+    @Path("/{Id}/type/v1")
+    fun getPetTypeV1(@PathParam("Id") id: String): Response {
+        Response.status(Response.Status.OK).build()
+        return Response.ok("GET OK").build()
+    }
+
+    @GET
+    @Path("/{Id}/type/v2")
+    fun getPetTypeV2(@PathParam("Id") id: String): Response {
         Response.status(Response.Status.OK).build()
         return Response.ok("GET OK").build()
     }
 
     @PUT
-    @Path("/{Id}/type")
+    @Path("/{Id}/type/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    fun updatePetType(@PathParam("Id") id: String, petType: String): Response {
+    fun updatePetTypeV1(@PathParam("Id") id: String, petType: String): Response {
+        Response.status(Response.Status.OK).build()
+        return Response.ok("PUT OK").build()
+    }
+
+    @PUT
+    @Path("/{Id}/type/v2")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun updatePetTypeV2(@PathParam("Id") id: String, petType: String): Response {
         Response.status(Response.Status.OK).build()
         return Response.ok("PUT OK").build()
     }
