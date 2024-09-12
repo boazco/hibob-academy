@@ -61,6 +61,4 @@ class BankAccountTest {
         val bankAccount = BankAccount(0.0)
         assertEquals(0.0, bankAccount.getBalance())
     }
-
-
 }
