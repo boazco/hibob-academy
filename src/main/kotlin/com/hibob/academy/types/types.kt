@@ -16,7 +16,9 @@ data class Owner(
     val id: UUID,
     val companyId: UUID,
     val employeeId: UUID,
-    var name: String,
+    var name: String?,
     var type: String,
-    var dateOfArrival: LocalDateTime
+    var dateOfArrival: LocalDateTime,
+    var firstName: String?,
+    var lastName: String?
 )
