@@ -3,9 +3,10 @@ package com.hibob.academy.dao
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.Record
+import org.springframework.stereotype.Repository
 import java.util.*
 
-
+@Repository
 class OwnerDao(private val sql: DSLContext) {
 
     private val ownerTable = OwnersTable.instance
