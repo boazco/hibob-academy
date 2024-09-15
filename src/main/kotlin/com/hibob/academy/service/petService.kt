@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class PetService(private val petDao: PetDao){
+class PetService(private val petDao: PetDao) {
 
     fun petsByType(type: String, companyId: Long): List<Pet> {
         return petDao.petsByType(type, companyId)
@@ -15,12 +15,12 @@ class PetService(private val petDao: PetDao){
         return petDao.getPetsByOwnerId(ownerId, companyId)
     }
 
-    fun createPet(pet: Pet): UUID? {
+    fun createPet(pet: PetNoId): UUID? {
         return petDao.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownersId)
         //NEED TO CHANGE the dao create owner so it gets PetNoId (AFTER PREV PR APPROVED)
     }
 
-    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID){
+    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID) {
         petDao.assignOwnerIdToPet(petId, ownerId)
     }
 }

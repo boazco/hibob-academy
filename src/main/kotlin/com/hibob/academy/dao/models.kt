@@ -27,3 +27,11 @@ data class Pet(
     val ownersId: UUID?
 )
 
+data class PetNoId(
+    val name: String,
+    val type: String,
+    val companyId: Long,
+    val dateOfArrival: Date,
+    val ownersId: UUID?
+)
+
