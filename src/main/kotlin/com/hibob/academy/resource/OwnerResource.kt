@@ -13,8 +13,7 @@ import java.util.UUID
 @Component
 @Path("/owner")
 class OwnerResource(
-    private val ownerService: OwnerService,
-    service: OwnerService
+    private val ownerService: OwnerService
 ) {
     @GET
     @Produces(MediaType.APPLICATION_JSON)

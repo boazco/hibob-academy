@@ -3,9 +3,10 @@ package com.hibob.academy.dao
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.RecordMapper
+import org.springframework.stereotype.Repository
 import java.sql.Date
 import java.util.*
-
+@Repository
 class PetDao(private val sql: DSLContext) {
 
     private val petsTable = PetsTable.instance

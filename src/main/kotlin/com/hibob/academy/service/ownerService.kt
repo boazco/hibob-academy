@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class OwnerService(private val ownerDao: OwnerDao, dao: OwnerDao){
+class OwnerService(private val ownerDao: OwnerDao){
 
     fun getOwners(companyId:Long) : List<Owner> {
         return ownerDao.getOwners(companyId)
