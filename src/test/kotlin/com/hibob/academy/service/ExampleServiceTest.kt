@@ -11,7 +11,7 @@ import org.mockito.kotlin.whenever
 import kotlin.random.Random
 
 class ExampleServiceTest {
-    private val exampleDaoMock = mock<ExampleDao>{}
+    private val exampleDaoMock = mock<ExampleDao> {}
     private val exampleService = ExampleService(exampleDaoMock)
 
     @Test
