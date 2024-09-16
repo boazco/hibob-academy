@@ -41,12 +41,7 @@ class PetResource(
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     fun createPet(@RequestBody pet: PetNoId): Response {
-        val petId = petService.createPet(pet)
-        if (petId != null) {
-            return Response.ok(petId).build()
-        } else {
-            return Response.status(Response.Status.BAD_REQUEST).build()
-        }
+        return Response.ok(petService.createPet(pet)).build()
     }
 
     @PUT

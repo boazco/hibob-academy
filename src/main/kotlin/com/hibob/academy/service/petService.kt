@@ -1,6 +1,7 @@
 package com.hibob.academy.service
 
 import com.hibob.academy.dao.*
+import jakarta.ws.rs.BadRequestException
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -15,9 +16,15 @@ class PetService(private val petDao: PetDao) {
         return petDao.getPetsByOwnerId(ownerId, companyId)
     }
 
-    fun createPet(pet: PetNoId): UUID? {
-        return petDao.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownersId)
-        //NEED TO CHANGE the dao create owner so it gets PetNoId (AFTER PREV PR APPROVED)
+    fun createPet(pet: PetNoId): UUID {
+        val petId = petDao.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownersId)
+        if (petId != null) {
+            return petId
+        }
+        else{
+            throw BadRequestException()
+        }
+    //NEED TO CHANGE the dao create owner so it gets PetNoId (AFTER PREV PR APPROVED)
     }
 
     fun assignOwnerIdToPet(petId: UUID, ownerId: UUID) {
