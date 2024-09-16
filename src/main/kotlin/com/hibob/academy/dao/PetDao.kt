@@ -56,8 +56,8 @@ class PetDao(private val sql: DSLContext) {
             .fetchOne()?.let { it[petsTable.id] }
     }
 
-    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID) {
-        sql.update(petsTable)
+    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID): Int {
+        return sql.update(petsTable)
             .set(petsTable.ownersId, ownerId)
             .where(petsTable.id.eq(petId))
             .execute()

@@ -20,14 +20,17 @@ class PetService(private val petDao: PetDao) {
         val petId = petDao.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownersId)
         if (petId != null) {
             return petId
-        }
-        else{
+        } else {
             throw BadRequestException()
         }
-    //NEED TO CHANGE the dao create owner so it gets PetNoId (AFTER PREV PR APPROVED)
+        //NEED TO CHANGE the dao create owner so it gets PetNoId (AFTER PREV PR APPROVED)
     }
 
-    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID) {
-        petDao.assignOwnerIdToPet(petId, ownerId)
+    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID): Int {
+        return if (petDao.assignOwnerIdToPet(petId, ownerId) > 0) {
+            1
+        } else {
+            throw BadRequestException("No pet with that id")
+        }
     }
 }
