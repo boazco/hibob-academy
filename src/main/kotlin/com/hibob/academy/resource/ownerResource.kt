@@ -4,6 +4,16 @@ import com.hibob.academy.types.Owner
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Controller
+
+
+
+
+
+
+
+
+
+
 import jakarta.ws.rs.core.MediaType
 import org.springframework.web.bind.annotation.RequestBody
 
