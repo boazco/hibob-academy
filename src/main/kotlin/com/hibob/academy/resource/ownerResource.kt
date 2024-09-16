@@ -1,47 +1,44 @@
 package com.hibob.academy.resource
 
-import com.hibob.academy.types.Owner
+import com.hibob.academy.dao.Owner
+import com.hibob.academy.dao.OwnerNoId
+import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
-import jakarta.ws.rs.core.Response
-import org.springframework.stereotype.Controller
 import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
+import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestBody
+import java.util.UUID
 
-@Controller
-@Path("api/owners")
-@Produces(MediaType.APPLICATION_JSON)
-class OwnerResource {
-
-    @POST
-    @Path("/create")
-    @Consumes(MediaType.APPLICATION_JSON)
-    fun createOwner(@RequestBody owner: Owner): Response {
-        return Response.ok("POST OK").build()
+@Component
+@Path("/owner")
+class OwnerResource(
+    private val ownerService: OwnerService
+) {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{companyId}")
+    fun getOwners(@PathParam("companyId") companyId: Long): Response {
+        return Response.ok(ownerService.getOwners(companyId = companyId)).build()
     }
 
     @GET
-    @Path("/{ownerId}/petType")
-    fun getOwnersPetType(@PathParam("ownerId") id: String): Response {
-        return Response.ok("GET OK").build()
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{companyId}/{petId}")
+    fun getOwnerByPetId(@PathParam("companyId") companyId: Long, @PathParam("petId") petId: UUID): Response {
+        return Response.ok(ownerService.getOwnerByPetId(petId, companyId)).build()
     }
 
-    fun fetchOwner(id: String): Owner? {
-        return null     //Just for Practice
-    }
-
-    @PUT
-    @Path("/{ownerId}/updateType")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    fun updateOwnersPetType(@PathParam("ownerId") id: String, ownersPetType: String): Response {
-        if(fetchOwner(id) == null){
-            return Response.status(404).build()
+    fun createOwner(@RequestBody owner: OwnerNoId): Response {
+        val ownerId = ownerService.createOwner(owner)
+        if (ownerId != null) {
+            return Response.ok(ownerId).build()
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).build()
         }
-        return Response.ok("PUT OK").build()
     }
 
-    @DELETE
-    @Path("/{ownerId}/remove")
-    fun deleteOwner(@PathParam("ownerId") id: String): Response {
-        return Response.ok("DELETE OK").build()
-    }
 }
