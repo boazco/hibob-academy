@@ -19,7 +19,6 @@ interface EmailVerificationService {
 
 
 
-
 class UserService(
     private val userDao: UserDao,
     private val notificationService: NotificationService,
