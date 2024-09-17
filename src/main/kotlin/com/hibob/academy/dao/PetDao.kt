@@ -76,7 +76,7 @@ class PetDao(private val sql: DSLContext) {
                 { record -> record[count].toInt() })
     }
 
-    fun createMultiplePets(pets: List<PetNoId>) {
+    fun createMultiplePets(pets: List<PetNoId>){
         val insert = sql.insertInto(petsTable)
             .columns(
                 petsTable.id,

@@ -38,7 +38,7 @@ class PetService(private val petDao: PetDao) {
         return successfulyUpdated
     }
 
-    fun createMultiplePets(pets: List<PetNoId>): List<UUID> {
-        return listOf(UUID.randomUUID())
+    fun createMultiplePets(pets: List<PetNoId>) {
+        petDao.createMultiplePets(pets)
     }
 }
