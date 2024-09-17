@@ -36,7 +36,7 @@ class PetServiceTest {
         whenever(petDaoMock.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownerId)).thenReturn(
             pet.id
         )
-        assertEquals(pet.id, petDaoMock.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownerId))
+        assertEquals(pet.id, service.createPet(pet))
     }
 
     @Test
@@ -59,6 +59,7 @@ class PetServiceTest {
                     notPetId,
                     ownerId
                 )
-            }.message)
+            }.message
+        )
     }
 }
