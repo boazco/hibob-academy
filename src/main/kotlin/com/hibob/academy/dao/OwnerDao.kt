@@ -4,9 +4,11 @@ import jakarta.ws.rs.BadRequestException
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.jooq.Record
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
 import java.util.*
 
-
+@Component
 class OwnerDao(private val sql: DSLContext) {
 
     private val ownerTable = OwnersTable.instance
