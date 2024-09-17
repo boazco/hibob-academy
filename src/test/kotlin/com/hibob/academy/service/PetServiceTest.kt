@@ -2,10 +2,12 @@ package com.hibob.academy.service
 
 import com.hibob.academy.dao.Pet
 import com.hibob.academy.dao.PetDao
+import com.hibob.academy.dao.PetNoId
 import jakarta.ws.rs.BadRequestException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import java.sql.Date
 import java.time.LocalDate
@@ -32,19 +34,20 @@ class PetServiceTest {
 
     @Test
     fun `create new pet`() {
-        val pet = Pet(UUID.randomUUID(), "jerry", "Dog", 9, Date.valueOf(LocalDate.now()), null)
-        whenever(petDaoMock.createPet(pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownerId)).thenReturn(
-            pet.id
+        val petId = UUID.randomUUID()
+        val pet = PetNoId("jerry", "Dog", 9, Date.valueOf(LocalDate.now()), null)
+        whenever(petDaoMock.createPet(PetNoId( pet.name, pet.type, pet.companyId, pet.dateOfArrival, pet.ownerId))).thenReturn(
+            petId
         )
-        assertEquals(pet.id, service.createPet(pet))
+        assertEquals(petId, service.createPet(pet))
     }
 
     @Test
     fun `update pet owner id- sucsess `() {
-        val pet = Pet(UUID.randomUUID(), "jerry", "Dog", 9, Date.valueOf(LocalDate.now()), null)
+        val pet = PetNoId("jerry", "Dog", 9, Date.valueOf(LocalDate.now()), null)
         val ownerId = UUID.randomUUID()
-        whenever(petDaoMock.assignOwnerIdToPet(pet.id, ownerId)).thenReturn(1)
-        assertEquals(1, service.assignOwnerIdToPet(pet.id, ownerId))
+        whenever(petDaoMock.assignOwnerIdToPet(any() ,any())).thenReturn(1)
+        assertDoesNotThrow{service.assignOwnerIdToPet(UUID.randomUUID(), ownerId)}
     }
 
     @Test
