@@ -5,7 +5,6 @@ import org.jooq.Record
 import org.jooq.RecordMapper
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import java.sql.Date
 import java.util.*
 
 @Repository
@@ -75,5 +74,35 @@ class PetDao(private val sql: DSLContext) {
             .intoMap(
                 { record -> record[petsTable.type].toString() },
                 { record -> record[count].toInt() })
+    }
+
+    fun createMultiplePets(pets: List<PetNoId>) {
+        val insert = sql.insertInto(petsTable)
+            .columns(
+                petsTable.id,
+                petsTable.name,
+                petsTable.type,
+                petsTable.companyId,
+                petsTable.dateOfArrival,
+                petsTable.ownerId
+            )
+            .values(
+                DSL.param(petsTable.id),
+                DSL.param(petsTable.name),
+                DSL.param(petsTable.type),
+                DSL.param(petsTable.companyId),
+                DSL.param(petsTable.dateOfArrival),
+                DSL.param(petsTable.ownerId)
+            )
+        val batch = sql.batch(insert)
+        pets.forEach { batch.bind( UUID.randomUUID(), it.name, it.type, it.companyId, it.dateOfArrival, it.ownerId) }
+        batch.execute()
+    }
+
+    fun getPetsByCompanyId(companyId: Long): List<Pet> {
+        return sql.select()
+            .from(petsTable)
+            .where(petsTable.companyId.eq(companyId))
+            .fetch(petsMapper)
     }
 }

@@ -71,4 +71,18 @@ class PetServiceTest {
         whenever(petDaoMock.countPetsByType(9)).thenReturn(mapOf("Dog" to 2, "Cat" to 3))
         assertEquals(mapOf("Dog" to 2, "Cat" to 3), service.countPetsByType(9))
     }
+
+    @Test
+    fun `update multiple pets owners`(){
+        val ownerId = UUID.randomUUID()
+        val petId = UUID.randomUUID()
+        whenever(petDaoMock.assignOwnerIdToPet(petId, ownerId)).thenReturn(1)
+        val petsId = listOf(petId, petId, petId, petId, petId)
+        assertEquals(5, service.adoptMultiple(petsId, ownerId, 9))
+    }
+
+    @Test
+    fun `not updating owners when the list is empty`(){
+        assertEquals(0, service.adoptMultiple(listOf<UUID>(), ownerId = UUID.randomUUID(), 9))
+    }
 }

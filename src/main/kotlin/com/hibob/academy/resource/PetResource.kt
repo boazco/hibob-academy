@@ -1,7 +1,5 @@
 package com.hibob.academy.resource
 
-import com.hibob.academy.dao.Pet
-import com.hibob.academy.dao.PetDao
 import com.hibob.academy.dao.PetNoId
 import com.hibob.academy.service.PetService
 import jakarta.ws.rs.Consumes
@@ -15,7 +13,6 @@ import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestBody
-import java.awt.PageAttributes
 import java.util.*
 
 @Component
@@ -46,6 +43,18 @@ class PetResource(
     @Path("/{petId}/{ownerId}")
     fun assignOwnerIdToPet(@PathParam("petId") petId: UUID, @PathParam("ownerId") ownerId: UUID): Response {
         return Response.ok(petService.assignOwnerIdToPet(petId, ownerId)).build()
+    }
+
+    @PUT
+    @Path("/adoptOwnerToMultiple/{ownerId}/{companyId}")
+    fun adoptMultiple(@PathParam("ownerId") ownerId: UUID, @PathParam("companyId") companyId: Long, @RequestBody pets: List<UUID>): Response {
+        return Response.ok("The owner have " + petService.adoptMultiple(pets, ownerId, companyId) + " new pets").build()
+    }
+
+    @PUT
+    @Path("addMultiple")
+    fun createMultiplePets(@RequestBody pets: List<PetNoId>): Response {
+        return Response.ok(petService.createMultiplePets(pets)).build()
     }
 
 }

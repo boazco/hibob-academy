@@ -29,4 +29,16 @@ class PetService(private val petDao: PetDao) {
     fun countPetsByType(companyId: Long): Map<String, Int> {
         return petDao.countPetsByType(companyId)
     }
+
+    fun adoptMultiple(pets: List<UUID>, ownerId: UUID, companyId: Long): Int {
+        var successfulyUpdated = 0
+        pets.forEach {
+            successfulyUpdated += petDao.assignOwnerIdToPet(it, ownerId)
+        }
+        return successfulyUpdated
+    }
+
+    fun createMultiplePets(pets: List<PetNoId>): List<UUID> {
+        return listOf(UUID.randomUUID())
+    }
 }
