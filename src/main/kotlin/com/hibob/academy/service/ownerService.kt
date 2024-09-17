@@ -2,6 +2,7 @@ package com.hibob.academy.service
 
 import com.hibob.academy.dao.Owner
 import com.hibob.academy.dao.OwnerDao
+import com.hibob.academy.dao.OwnerNoId
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -16,9 +17,8 @@ class OwnerService(private val ownerDao: OwnerDao) {
         return ownerDao.getOwnerByPetId(petId, companyId)
     }
 
-    fun createOwner(owner: Owner): UUID? {
-        return ownerDao.createOwner(owner.companyId, owner.employeeId, owner.name)
-        //NEED TO CHANGE the dao create owner so it gets OwnerNoID (AFTER PREV PR APPROVED)
+    fun createOwner(owner: OwnerNoId): UUID {
+        return ownerDao.createOwner(owner)
     }
 
 }
