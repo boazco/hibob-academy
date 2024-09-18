@@ -1,13 +1,10 @@
 package com.hibob.academy.resource
 
-import com.hibob.academy.dao.Owner
 import com.hibob.academy.dao.OwnerNoId
 import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.Response
-import org.springframework.stereotype.Controller
 import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
