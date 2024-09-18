@@ -57,10 +57,11 @@ class PetDao(private val sql: DSLContext) {
             .fetchOne()!![petsTable.id]
     }
 
-    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID): Int {
+    fun assignOwnerIdToPet(pets: List<UUID>, ownerId: UUID, companyId: Long): Int {
         return sql.update(petsTable)
             .set(petsTable.ownerId, ownerId)
-            .where(petsTable.id.eq(petId))
+            .where(petsTable.id.`in`(pets))
+            .and(petsTable.companyId.eq(companyId))
             .execute()
     }
 

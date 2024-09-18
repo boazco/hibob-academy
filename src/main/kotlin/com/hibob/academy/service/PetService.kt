@@ -20,8 +20,8 @@ class PetService(private val petDao: PetDao) {
         return petDao.createPet(pet)
     }
 
-    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID) {
-        if (petDao.assignOwnerIdToPet(petId, ownerId) == 0) {
+    fun assignOwnerIdToPet(petId: UUID, ownerId: UUID, companyId: Long) {
+        if (petDao.assignOwnerIdToPet(listOf(petId), ownerId, companyId) == 0) {
             throw BadRequestException("No pet with that id")
         }
     }
@@ -30,8 +30,8 @@ class PetService(private val petDao: PetDao) {
         return petDao.countPetsByType(companyId)
     }
 
-    fun adoptMultiple(pets: List<UUID>, ownerId: UUID, companyId: Long): Int {
-        return pets.count { pet -> petDao.assignOwnerIdToPet(pet, ownerId) == 1 }
+    fun adoptMultiple(pets: List<UUID>, ownerId: UUID, companyId: Long) {
+        petDao.assignOwnerIdToPet(pets, ownerId, companyId)
     }
 
     fun createMultiplePets(pets: List<PetNoId>) {
