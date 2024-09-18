@@ -47,7 +47,11 @@ class PetResource(
 
     @PUT
     @Path("/adoptOwnerToMultiple/{ownerId}/{companyId}")
-    fun adoptMultiple(@PathParam("ownerId") ownerId: UUID, @PathParam("companyId") companyId: Long, @RequestBody pets: List<UUID>): Response {
+    fun adoptMultiple(
+        @PathParam("ownerId") ownerId: UUID,
+        @PathParam("companyId") companyId: Long,
+        @RequestBody pets: List<UUID>
+    ): Response {
         val numOfAffectedPets = petService.adoptMultiple(pets, ownerId, companyId)
         return Response.ok("The owner have " + numOfAffectedPets + " new pets").build()
     }

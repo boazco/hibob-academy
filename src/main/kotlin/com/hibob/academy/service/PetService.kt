@@ -31,11 +31,7 @@ class PetService(private val petDao: PetDao) {
     }
 
     fun adoptMultiple(pets: List<UUID>, ownerId: UUID, companyId: Long): Int {
-        var successfulyUpdated = 0
-        pets.forEach {
-            successfulyUpdated += petDao.assignOwnerIdToPet(it, ownerId)
-        }
-        return successfulyUpdated
+        return pets.count { pet -> petDao.assignOwnerIdToPet(pet, ownerId) == 1 }
     }
 
     fun createMultiplePets(pets: List<PetNoId>) {

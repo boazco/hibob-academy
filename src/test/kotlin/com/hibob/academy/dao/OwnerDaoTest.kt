@@ -20,6 +20,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val petTable = PetsTable.instance
     private val petDao = PetDao(sql)
     private val companyId = Random.nextLong()
+    private val bob = OwnerNoId(companyId, "aa", "bob")
 
     @BeforeEach
     @AfterEach
@@ -30,7 +31,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @Test
     fun `create and read`() {
-        val ownerId = dao.createOwner(OwnerNoId(companyId, "aa", "bob"))
+        val ownerId = dao.createOwner(bob)
         val owners = dao.getOwners(companyId)
         assertEquals(
             listOf(
@@ -42,12 +43,11 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
                 )
             ), owners
         )
-
     }
 
     @Test
     fun `not adding employee with same company and employee id`() {
-        val ownerId = dao.createOwner(OwnerNoId(companyId, "aa", "bob"))
+        val ownerId = dao.createOwner(bob)
         assertEquals(
             "Owner with the same company and employee id already exists",
             org.junit.jupiter.api.assertThrows<BadRequestException> {
@@ -74,7 +74,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @Test
     fun `create and read multiple owners`() {
-        val ownerId1 = dao.createOwner(OwnerNoId(companyId, "aa", "bob"))
+        val ownerId1 = dao.createOwner(bob)
         val ownerId2 = dao.createOwner(OwnerNoId(companyId, "bbb", "jerry"))
         val ownerId3 = dao.createOwner(OwnerNoId(companyId, "ccc", "johans"))
         assertEquals(
@@ -102,7 +102,7 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @Test
     fun `get owner by pet id`() {
-        val ownerId = dao.createOwner(OwnerNoId(companyId, "aa", "bob"))
+        val ownerId = dao.createOwner(bob)
         val petId = petDao.createPet(PetNoId("Jerry", "Dog", companyId, Date.valueOf(LocalDate.now()), ownerId))
         assertEquals(
             listOf(
@@ -114,12 +114,11 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
                 )
             ), dao.getOwnerByPetId(petId, companyId)
         )
-
     }
 
     @Test
     fun `get owner by pet id with multiple pets`() {
-        val ownerId = dao.createOwner(OwnerNoId(companyId, "aa", "bob"))
+        val ownerId = dao.createOwner(bob)
         val petId1 = petDao.createPet(PetNoId("Jerry", "Dog", companyId, Date.valueOf(LocalDate.now()), ownerId))
         val petId2 = petDao.createPet(PetNoId("Johns", "Cat", companyId, Date.valueOf(LocalDate.now()), ownerId))
         val petId3 = petDao.createPet(PetNoId("Mitzi", "Cow", companyId, Date.valueOf(LocalDate.now()), null))
@@ -144,6 +143,5 @@ class OwnerDaoTest @Autowired constructor(private val sql: DSLContext) {
             ), dao.getOwnerByPetId(petId2, companyId)
         )
         assertEquals(mutableListOf<Owner>(), dao.getOwnerByPetId(petId3, companyId))
-
     }
 }

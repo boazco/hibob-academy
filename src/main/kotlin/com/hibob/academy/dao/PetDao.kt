@@ -76,7 +76,7 @@ class PetDao(private val sql: DSLContext) {
                 { record -> record[count].toInt() })
     }
 
-    fun createMultiplePets(pets: List<PetNoId>){
+    fun createMultiplePets(pets: List<PetNoId>) {
         val insert = sql.insertInto(petsTable)
             .columns(
                 petsTable.id,
@@ -95,7 +95,7 @@ class PetDao(private val sql: DSLContext) {
                 DSL.param(petsTable.ownerId)
             )
         val batch = sql.batch(insert)
-        pets.forEach { batch.bind( UUID.randomUUID(), it.name, it.type, it.companyId, it.dateOfArrival, it.ownerId) }
+        pets.forEach { batch.bind(UUID.randomUUID(), it.name, it.type, it.companyId, it.dateOfArrival, it.ownerId) }
         batch.execute()
     }
 
