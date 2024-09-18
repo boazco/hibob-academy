@@ -46,23 +46,44 @@ class PetServiceTest {
     fun `update pet owner id- sucsess `() {
         val pet = PetNoId("jerry", "Dog", 9, Date.valueOf(LocalDate.now()), null)
         val ownerId = UUID.randomUUID()
-        whenever(petDaoMock.assignOwnerIdToPet(any() ,any())).thenReturn(1)
-        assertDoesNotThrow{service.assignOwnerIdToPet(UUID.randomUUID(), ownerId)}
+        whenever(petDaoMock.assignOwnerIdToPet(any() ,any(), any())).thenReturn(1)
+        assertDoesNotThrow{service.assignOwnerIdToPet(UUID.randomUUID(), ownerId, 9)}
     }
 
     @Test
     fun `update pet owner id- fails `() {
         val ownerId = UUID.randomUUID()
         val notPetId = UUID.randomUUID()
-        whenever(petDaoMock.assignOwnerIdToPet(notPetId, ownerId)).thenReturn(0)
+        whenever(petDaoMock.assignOwnerIdToPet(listOf( notPetId), ownerId, 9)).thenReturn(0)
         assertEquals(
             "No pet with that id",
             org.junit.jupiter.api.assertThrows<BadRequestException> {
                 service.assignOwnerIdToPet(
                     notPetId,
-                    ownerId
+                    ownerId,
+                    9
                 )
             }.message
         )
+    }
+
+    @Test
+    fun `count pets by type`() {
+        whenever(petDaoMock.countPetsByType(9)).thenReturn(mapOf("Dog" to 2, "Cat" to 3))
+        assertEquals(mapOf("Dog" to 2, "Cat" to 3), service.countPetsByType(9))
+    }
+
+    @Test
+    fun `update multiple pets owners`(){
+        val ownerId = UUID.randomUUID()
+        val petId = UUID.randomUUID()
+        whenever(petDaoMock.assignOwnerIdToPet(listOf(petId), ownerId, 9)).thenReturn(1)
+        val petsId = listOf(petId, petId, petId, petId, petId)
+        assertDoesNotThrow{service.adoptMultiple(petsId, ownerId, 9)}
+    }
+
+    @Test
+    fun `not updating owners when the list is empty`(){
+        assertDoesNotThrow{service.adoptMultiple(listOf<UUID>(), ownerId = UUID.randomUUID(), 9)}
     }
 }
