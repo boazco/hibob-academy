@@ -38,6 +38,6 @@ class OwnerResource(
     @DELETE
     @Path("/{ownerId}")
     fun deleteOwner(@PathParam("ownerId") id: String): Response {
-        return Response.noContent().build()
+        return Response.ok().build()
     }
 }
