@@ -42,8 +42,8 @@ class PetResource(
 
     @PUT
     @Path("/{petId}/owner/{ownerId}/{companyId}")
-    fun assignOwnerIdToPet(@PathParam("petId") petId: UUID, @PathParam("ownerId") ownerId: UUID, companyId: Long): Response {
-        return Response.ok(petService.assignOwnerIdToPet(petId, ownerId, companyId)).build()
+    fun assignOwnerIdToPet(@PathParam("petId") petId: UUID, @PathParam("ownerId") ownerId: UUID): Response {
+        return Response.ok(petService.assignOwnerIdToPet(petId, ownerId)).build()
     }
 
 }
