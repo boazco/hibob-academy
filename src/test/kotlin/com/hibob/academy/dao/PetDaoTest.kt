@@ -34,14 +34,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext) {
         val petId = petDao.createPet(jerry)
         assertEquals(
             listOf(
-                Pet(
-                    petId,
-                    "Jerry",
-                    "Dog",
-                    companyId,
-                    Date.valueOf(LocalDate.now()),
-                    ownerId
-                )
+                Pet(petId, "Jerry", "Dog", companyId, Date.valueOf(LocalDate.now()), ownerId)
             ),
             petDao.petsByType(type = "Dog", companyId)
         )
@@ -49,15 +42,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext) {
 
     @Test
     fun `dont get pet with different type`() {
-        petDao.createPet(
-            PetNoId(
-                name = "Jerry",
-                type = "Dog",
-                companyId = companyId,
-                dateOfArrival = Date.valueOf(LocalDate.now()),
-                ownerId = null
-            )
-        )
+        petDao.createPet(jerry)
         assertEquals(emptyList<Pet>(), petDao.petsByType(type = "Cat", companyId))
     }
 
@@ -125,18 +110,11 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext) {
     @Test
     fun `get pets by ownerId with few owners`() {
         val petId = petDao.createPet(jerry)
-        petDao.createPet(PetNoId("buddy", "Cow", companyId, Date.valueOf(LocalDate.now()), null))
-        petDao.createPet(PetNoId("micky", "Dog", companyId, Date.valueOf(LocalDate.now()), null))
+        petDao.createPet(johans.copy(ownerId = null))
+        petDao.createPet(mitzi.copy(ownerId = UUID.randomUUID()))
         assertEquals(
             listOf(
-                Pet(
-                    petId,
-                    "Jerry",
-                    "Dog",
-                    companyId,
-                    Date.valueOf(LocalDate.now()),
-                    ownerId
-                )
+                Pet(petId, "Jerry", "Dog", companyId, Date.valueOf(LocalDate.now()), ownerId)
             ),
             petDao.getPetsByOwnerId(ownerId, companyId)
         )
@@ -149,14 +127,7 @@ class PetDaoTest @Autowired constructor(private val sql: DSLContext) {
         petDao.assignOwnerIdToPet(listOf(petId), ownerId, companyId)
         assertEquals(
             listOf(
-                Pet(
-                    petId,
-                    "Jerry",
-                    "Dog",
-                    companyId,
-                    Date.valueOf(LocalDate.now()),
-                    ownerId
-                )
+                Pet(petId, "Jerry", "Dog", companyId, Date.valueOf(LocalDate.now()), ownerId)
             ),
             petDao.getPetsByOwnerId(ownerId, companyId)
         )
