@@ -1,6 +1,5 @@
 package com.hibob.academy.resource
 
-import com.hibob.academy.dao.Owner
 import com.hibob.academy.dao.OwnerNoId
 import com.hibob.academy.service.OwnerService
 import jakarta.ws.rs.*
@@ -18,13 +17,13 @@ class OwnerResource(
     private val ownerService: OwnerService
 ) {
     @GET
-    @Path("/{companyId}")
+    @Path("/company/{companyId}")
     fun getOwners(@PathParam("companyId") companyId: Long): Response {
         return Response.ok(ownerService.getOwners(companyId = companyId)).build()
     }
 
     @GET
-    @Path("/{companyId}/{petId}")
+    @Path("/pet/{petId}/company/{companyId}")
     fun getOwnerByPetId(@PathParam("companyId") companyId: Long, @PathParam("petId") petId: UUID): Response {
         return Response.ok(ownerService.getOwnerByPetId(petId, companyId)).build()
     }

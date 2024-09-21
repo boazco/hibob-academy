@@ -23,13 +23,13 @@ class PetResource(
     private val petService: PetService
 ) {
     @GET
-    @Path("/byType/{companyId}/{type}")
+    @Path("/byType/{type}/company/{companyId}")
     fun petsByType(@PathParam("companyId") companyId: Long, @PathParam("type") type: String): Response {
         return Response.ok(petService.petsByType(type, companyId)).build()
     }
 
     @GET
-    @Path("/byOwner/{companyId}/{ownerId}")
+    @Path("/byOwner/{ownerId}/company/{companyId}")
     fun getPetsByOwnerId(@PathParam("companyId") ownerId: UUID, @PathParam("ownerId") companyId: Long): Response {
         return Response.ok(petService.getPetsByOwnerId(ownerId, companyId)).build()
     }
@@ -40,13 +40,13 @@ class PetResource(
     }
 
     @PUT
-    @Path("/{petId}/owner/{ownerId}/{companyId}")
+    @Path("/adopt/{petId}/owner/{ownerId}/company/{companyId}")
     fun assignOwnerIdToPet(@PathParam("petId") petId: UUID, @PathParam("ownerId") ownerId: UUID, @PathParam("companyId") companyId: Long): Response {
         return Response.ok(petService.assignOwnerIdToPet(petId, ownerId, companyId)).build()
     }
 
     @PUT
-    @Path("/adoptOwnerToMultiple/{ownerId}/{companyId}")
+    @Path("/adoptOwnerToMultiple/{ownerId}/company/{companyId}")
     fun adoptMultiple(
         @PathParam("ownerId") ownerId: UUID,
         @PathParam("companyId") companyId: Long,
