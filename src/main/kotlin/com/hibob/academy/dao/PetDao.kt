@@ -5,7 +5,6 @@ import org.jooq.Record
 import org.jooq.RecordMapper
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import java.sql.Date
 import java.util.*
 
 @Repository
@@ -37,6 +36,7 @@ class PetDao(private val sql: DSLContext) {
             .where(petsTable.type.eq(type))
             .and(petsTable.companyId.eq(companyId))
             .fetch(petsMapper)
+
 
     fun getPetsByOwnerId(ownerId: UUID, companyId: Long): List<Pet> {
         return sql.select()
