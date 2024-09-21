@@ -56,7 +56,7 @@ class PetResource(
         return Response.ok("The owner have " + numOfAffectedPets + " new pets").build()
     }
 
-    @PUT
+    @POST
     @Path("addMultiple")
     fun createMultiplePets(@RequestBody pets: List<PetNoId>): Response {
         return Response.ok(petService.createMultiplePets(pets)).build()
