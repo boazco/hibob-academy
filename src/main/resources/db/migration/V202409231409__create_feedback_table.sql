@@ -5,7 +5,7 @@ create table IF NOT EXISTS feedback
     creation_date DATE default CURRENT_DATE,
     company_id UUID NOT NULL,
     status varchar(15) NOT NULL,
-    feedback_message LONGTEXT NOT NULL
+    feedback_message TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_creation_date on feedback(creation_date);
