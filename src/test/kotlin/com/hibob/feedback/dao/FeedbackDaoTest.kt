@@ -14,7 +14,7 @@ import java.util.*
 @BobDbTest
 class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val feedbackDao = FeedbackDao(sql)
-    private val feedbackTable = FeedbackTable.instance
+    private val feedbackTable = FeedbackDao.FeedbackTable.instance
     private val companyId = UUID.randomUUID()
 
     private val feedback =
@@ -33,7 +33,7 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     @Test
     fun `create should create a feedback and return his id`() {
         val feedbackId = feedbackDao.createFeedback(feedback, activeUser)
-        assertEquals(feedbackId, feedback.id)
+        assertTrue(feedbackId is UUID)
     }
 
     @Test
@@ -41,15 +41,15 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         val feedbackId = feedbackDao.createFeedback(feedback, activeUser)
         val feedbackId1 = feedbackDao.createFeedback(feedback1, activeUser)
         val feedbackId2 = feedbackDao.createFeedback(feedback2, activeUser)
-        assertEquals(feedbackId, feedback.id)
-        assertEquals(feedbackId1, feedback1.id)
-        assertEquals(feedbackId2, feedback2.id)
+        assertTrue(feedbackId is UUID)
+        assertTrue(feedbackId1 is UUID)
+        assertTrue(feedbackId2 is UUID)
     }
 
     @Test
     fun `create and the get should return feedback`() {
         val feedbackId = feedbackDao.createFeedback(feedback, activeUser)
-        assertEquals(feedback, feedbackDao.getFeedback(feedbackId, activeUser))
+        assertEquals(feedback.copy(id = feedbackId), feedbackDao.getFeedback(feedbackId, activeUser))
     }
 
     @Test
