@@ -5,10 +5,7 @@ import java.util.*
 data class Feedback(
     val id: UUID,
     val creationDate: Date,
-    val department: Department,
     val companyId: UUID,
-    val status: Status,
-    val responseIdList: List<UUID>,
     val feedbackMessage: String
 )
 
