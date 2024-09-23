@@ -13,7 +13,7 @@ import java.util.*
 @BobDbTest
 class EmployeesDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val employeesDao = EmployeesDao(sql)
-    private val employeesTable = EmployeesTable.instance
+    private val employeesTable = EmployeesDao.EmployeesTable.instance
     private val companyId = UUID.randomUUID()
 
     @BeforeEach
