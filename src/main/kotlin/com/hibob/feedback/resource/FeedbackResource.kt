@@ -1,6 +1,5 @@
 package com.hibob.feedback.resource
 
-import com.hibob.academy.filters.AuthenticationFilter.Companion.activeUserPropertyName
 import com.hibob.feedback.service.FeedbackService
 import com.hibob.feedback.dao.*
 import jakarta.ws.rs.*
@@ -58,6 +57,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @Path("/v1/getFeedbackStatus/{feedbackId}")
     fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
+        return Response.ok(feedback).build() //TO DO CHANGE IT to return the output from the service.
     }
 
     //to chang it to post so i can recive body
@@ -72,5 +72,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         throwIfNotAuthorized(activeUser)
         return Response.ok(feedbackService.filterFeedbacks(filter, activeUser)).build()
     }
+
+
 
 }
