@@ -28,6 +28,8 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     fun getFeedback(@PathParam("feedbackId") feedbackId: UUID): Response {
         val activeUser = ActiveUser(UUID.randomUUID(), UUID.randomUUID()) //TO DO: change it to take proprties from the header
         val feedback = feedbackService.getFeedback(feedbackId, activeUser)
-        return Response.ok(feedback).build()
+        return Response.ok(feedback).build() //TO DO CHANGE IT to return the output from the service.
     }
+
+
 }
