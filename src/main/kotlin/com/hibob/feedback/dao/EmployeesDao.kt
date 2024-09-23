@@ -26,7 +26,6 @@ class EmployeesDao(private val sql: DSLContext) {
 
     fun createEmployee(firstName: String, lastName: String, role: String, companyId: UUID, department: String): UUID{
         return sql.insertInto(employeesTable)
-            .set(employeesTable.employeeId, UUID.randomUUID())
             .set(employeesTable.firstName, firstName)
             .set(employeesTable.lastName, lastName)
             .set(employeesTable.role, role)
