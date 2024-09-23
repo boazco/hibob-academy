@@ -4,6 +4,9 @@ create table IF NOT EXISTS feedback
     employee_id UUID,
     creation_date DATE default CURRENT_DATE,
     company_id UUID NOT NULL,
-    status varchar(255) NOT NULL,
-    feedback_message varchar(1000) NOT NULL
+    status varchar(15) NOT NULL,
+    feedback_message LONGTEXT NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_creation_date on feedback(creation_date);
+CREATE INDEX IF NOT EXISTS idx_employee_id on feedback(employee_id);
