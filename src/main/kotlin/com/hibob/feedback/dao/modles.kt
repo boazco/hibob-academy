@@ -1,6 +1,5 @@
 package com.hibob.feedback.dao
 
-import java.sql.Date
 import java.util.*
 
 data class Feedback(
