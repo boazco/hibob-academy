@@ -20,6 +20,7 @@ class SessionService {
             .setHeaderParam("typ", "JWT")
             .claim("employeeId", user.employeeId)
             .claim("companyId", user.companyId)
+            //TO DO: verify that the employee exists in this company (check in DB) and get his role from DB and add claim
             .setExpiration(Date.from(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)))
             .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
             .compact()

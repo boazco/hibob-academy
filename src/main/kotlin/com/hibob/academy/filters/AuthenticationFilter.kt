@@ -25,12 +25,13 @@ class AuthenticationFilter : ContainerRequestFilter {
         val jwtCookie = requestContext.cookies[cookieName]?.value
         val claims = verifyAndExtractClaims(jwtCookie, requestContext)
         claims?.let{
+            //TO DO: create a User object here and store that as a request attribute
             requestContext.headers.add(employeeIdHeader, it["employeeId"].toString())
             requestContext.headers.add(companyIdHeader, it["companyId"].toString())
         }
     }
 
-    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, Any?>? {
+    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, String?>? {
         return cookie?.let {
             try {
                 val claims = Jwts.parserBuilder()
@@ -40,8 +41,8 @@ class AuthenticationFilter : ContainerRequestFilter {
                     .body
 
                 mapOf(
-                    "employeeId" to claims["employeeId"],
-                    "companyId" to claims["companyId"]
+                    "employeeId" to claims["employeeId"].toString(),
+                    "companyId" to claims["companyId"].toString()
                 )
             } catch (e: Exception) {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build())
