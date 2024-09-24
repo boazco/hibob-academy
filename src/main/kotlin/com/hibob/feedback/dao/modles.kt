@@ -17,7 +17,7 @@ data class FeedbackInput(
 )
 
 data class ActiveUser(
-    val employeeId: UUID?, //SHOULD IT BE NULLABLE?
+    val employeeId: UUID,
     val companyId: UUID
 )
 
