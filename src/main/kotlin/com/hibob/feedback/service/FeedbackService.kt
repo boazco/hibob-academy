@@ -20,21 +20,22 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
 
     fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback? {
         val feedback = feedbackDao.getFeedback(feedbackId, activeUser)
-        if (employeesDao.getDepartmentById(activeUser.employeeId) != "HR"
-            && employeesDao.getRoleById(activeUser.employeeId) != "Admin"
-            && /*the following condition or feedback.employeeId != activeUser.employeeId*/employeesDao.getEmployeeIdByFeedbackId(
-                feedbackId
-            ) != activeUser.employeeId
-        ) {
+        if (!isAuthorized(activeUser, feedbackId)) {
             throw ResponseStatusException(
                 HttpStatus.UNAUTHORIZED,
-                "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
-            )
+                "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin")
         }
         if (feedback == null) {
             throw BadRequestException("Feedback not found")
         }
         return feedback //Do we want to throw exception when no feedback is found? or only when no access
+    }
+
+    private fun isAuthorized(activeUser: ActiveUser, feedbackId: UUID): Boolean {
+        return (employeesDao.getDepartmentById(activeUser.employeeId!!, activeUser.companyId) == "HR"
+                || employeesDao.getRoleById(activeUser.employeeId, activeUser.companyId) == "Admin")
+                 //*the following condition or feedback.employeeId != activeUser.employeeId*/
+                //employeesDao.getEmployeeIdByFeedbackId(feedbackId) != activeUser.employeeId)
     }
 
 }
