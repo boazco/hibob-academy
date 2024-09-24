@@ -2,6 +2,7 @@ package com.hibob.academy.resource
 
 import com.hibob.academy.filters.AuthenticationFilter
 import com.hibob.academy.service.SessionService
+import com.hibob.feedback.dao.ActiveUser
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
@@ -18,15 +19,9 @@ class SessionApi(private val sessionService: SessionService) {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    fun login(@RequestBody user: User): Response? {
+    fun login(@RequestBody activeUser: ActiveUser): Response? {
         val cookie =
-            NewCookie.Builder(AuthenticationFilter.cookieName).value(sessionService.createJwtToken(user)).path("/api/").build()
+            NewCookie.Builder(AuthenticationFilter.cookieName).value(sessionService.createJwtToken(activeUser)).path("/api/").build()
         return Response.ok().cookie(cookie).build()
     }
-
-    data class User(
-        val employeeId: UUID,
-        val companyId: UUID
-    )
-
 }
