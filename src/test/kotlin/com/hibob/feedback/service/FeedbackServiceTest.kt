@@ -26,15 +26,30 @@ class FeedbackServiceTest {
         whenever(
             feedbackDaoMock.createFeedback(
                 feedbackInput,
-                activeUser)
+                activeUser
+            )
         ).thenReturn(UUID.randomUUID())
         assertEquals(true, service.createFeedback(feedbackInput, activeUser) is UUID)
     }
 
     @Test
     fun `trying to get feedbacks when not HR or Admin or feedback author should throw`() {
-        whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(null)
-        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(Employee(activeUser.employeeId, activeUser.companyId, Role.EMPLOYEE, Department.IT))
+        whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(
+            Feedback(
+                UUID.randomUUID(),
+                Date.valueOf(LocalDate.now()),
+                UUID.randomUUID(),
+                "TEST"
+            )
+        )
+        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(
+            Employee(
+                activeUser.employeeId,
+                activeUser.companyId,
+                Role.EMPLOYEE,
+                Department.IT
+            )
+        )
         assertEquals(
             "401 UNAUTHORIZED \"Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin\"",
             org.junit.jupiter.api.assertThrows<ResponseStatusException> {
@@ -48,8 +63,12 @@ class FeedbackServiceTest {
 
     @Test
     fun `when no feedback is found should throw exception`() {
-        whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(null)
-        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(Employee(activeUser.employeeId, activeUser.companyId, Role.ADMIN, Department.IT))
+        whenever(
+            feedbackDaoMock.getFeedback(
+                feedbackId,
+                activeUser
+            )
+        ).thenThrow(BadRequestException("Feedback not found"))
         assertEquals(
             "Feedback not found",
             org.junit.jupiter.api.assertThrows<BadRequestException> {
@@ -70,7 +89,14 @@ class FeedbackServiceTest {
             "for TEST"
         )
         whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(returningFeedback)
-        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(Employee(activeUser.employeeId, activeUser.companyId, Role.ADMIN, Department.IT))
+        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(
+            Employee(
+                activeUser.employeeId,
+                activeUser.companyId,
+                Role.ADMIN,
+                Department.IT
+            )
+        )
         assertEquals(returningFeedback, service.getFeedback(feedbackId, activeUser))
     }
 
