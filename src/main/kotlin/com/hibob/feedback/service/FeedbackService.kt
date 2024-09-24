@@ -2,22 +2,20 @@ package com.hibob.feedback.service
 
 import com.hibob.feedback.dao.ActiveUser
 import com.hibob.feedback.dao.Feedback
+import com.hibob.feedback.dao.FeedbackDao
 import com.hibob.feedback.dao.FeedbackInput
 import jakarta.ws.rs.BadRequestException
-import jakarta.ws.rs.NotAuthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
-import java.sql.Date
-import java.time.LocalDate
 import java.util.*
 
 @Component
-class FeedbackService(/* Will need to get the dao*/) {
+class FeedbackService(private val feedbackDao: FeedbackDao, dao: FeedbackDao) {
 
     fun createFeedback(feedbackInput: FeedbackInput, activeUser: ActiveUser): UUID {
         return if (feedbackInput.isAnonymous) {
-            FeedbackDao.createFeedback(feedbackInput, activeUser.copy(employeeId = null))
+            feedbackDao.createFeedback(feedbackInput, activeUser.copy(employeeId = null))
         } else {
             feedbackDao.createFeedback(feedbackInput, activeUser)
         }
@@ -25,7 +23,7 @@ class FeedbackService(/* Will need to get the dao*/) {
     }
 
     fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback? {
-        val feedback: Feedback = FeedbackDao.getFeedback(feedbackId, activeUser)
+        val feedback = feedbackDao.getFeedback(feedbackId, activeUser)
         if (EmployeesDao.getDepartmentById(activeUser.employeeId) != "HR"
             && EmployeesDao.getRoleById(activeUser.employeeId) != "Admin"
             && EmployeeDao.getEmployeeIdByFeedbackId(feedbackId) != activeUser.employeeId) {
