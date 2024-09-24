@@ -1,8 +1,8 @@
 package com.hibob.feedback.dao
 
 
-
 import com.hibob.academy.utils.JooqTable
+import jakarta.ws.rs.BadRequestException
 
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
@@ -44,7 +44,7 @@ class FeedbackDao(private val sql: DSLContext) {
 
     fun createFeedback(feedback: FeedbackInput, activeUser: ActiveUser): UUID {
         return sql.insertInto(feedbackTables)
-            .set(feedbackTables.employeeId, activeUser.employeeId)
+            .set(feedbackTables.employeeId, if (feedback.isAnonymous) null else activeUser.employeeId)
             .set(feedbackTables.companyId, activeUser.companyId)
             .set(feedbackTables.status, Status.UNREVIEWED.toString())
             .set(feedbackTables.feedbackMessage, feedback.feedbackMessage)
@@ -53,11 +53,12 @@ class FeedbackDao(private val sql: DSLContext) {
     }
 
 
-    fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback? {
+    fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback {
         return sql.select()
             .from(feedbackTables)
             .where(feedbackTables.feedbackId.eq(feedbackId))
             .and(feedbackTables.companyId.eq(activeUser.companyId))
             .fetchOne(feedbackMapper)
+            ?: throw BadRequestException("Feedback not found")
     }
 }

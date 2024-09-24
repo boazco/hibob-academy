@@ -17,8 +17,15 @@ data class FeedbackInput(
 )
 
 data class ActiveUser(
-    val employeeId: UUID?, //SHOULD IT BE NULLABLE?
+    val employeeId: UUID,
     val companyId: UUID
+)
+
+data class Employee(
+    val employeeId: UUID,
+    val companyId : UUID,
+    val role: Role,
+    val department: Department
 )
 
 enum class Department{
@@ -28,6 +35,12 @@ enum class Department{
     SALES,
     PRODUCT,
     FINANCE
+}
+
+enum class Role{
+    ADMIN,
+    MANAGER,
+    EMPLOYEE
 }
 
 enum class Status{
