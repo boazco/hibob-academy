@@ -41,7 +41,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
 
         throwIfNotAuthorized(activeUser)
         val feedback = feedbackService.getFeedback(feedbackId, activeUser)
-        return Response.ok(feedback).build()
+        return Response.ok(feedback).build() //TO DO CHANGE IT to return the output from the service.
     }
 
     private fun throwIfNotAuthorized(activeUser: ActiveUser) {
