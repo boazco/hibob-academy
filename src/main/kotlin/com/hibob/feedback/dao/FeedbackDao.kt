@@ -86,9 +86,8 @@ class FeedbackDao(private val sql: DSLContext, private val employeesDao: Employe
                 .on(employeeTable.employeeId.eq(feedbackTables.employeeId))
         }
 
-        query = query.where(feedbackTables.companyId.eq(activeUser.companyId))
-        val cond = conditions.reduce{acc, condition -> acc.and(condition)}
-        query = query.and(cond)
-        return query.fetch(feedbackMapper)
+        var conditionQuery = query.where(feedbackTables.companyId.eq(activeUser.companyId))
+        conditionQuery = conditionQuery.and(conditions.reduce{acc, condition -> acc.and(condition)})
+        return conditionQuery.fetch(feedbackMapper)
     }
 }

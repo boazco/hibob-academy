@@ -32,10 +32,15 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
 
     fun filterFeedbacks(condition: Filter, activeUser: ActiveUser): List<Feedback>? {
         val table = FeedbackTable.instance
+        val employeeTable = EmployeesDao.EmployeesTable.instance
         val conditionList = ArrayList<Condition>()
-        condition.isAnonymous?.let { conditionList.add(if (condition.isAnonymous) table.employeeId.isNotNull else FeedbackTable.instance.employeeId.isNull) }
+        var departmentCondition = false
+        condition.isAnonymous?.let { conditionList.add(if (condition.isAnonymous) table.employeeId.isNotNull else table.employeeId.isNull) }
         condition.date?.let { conditionList.add(table.creationDate.gt(condition.date)) }
-        condition.department?.let { conditionList.add(table.) }
+        condition.department?.let {
+            departmentCondition = true
+            conditionList.add(employeeTable.department.eq(condition.department.toString().uppercase()))
+        }
+        return feedbackDao.filterFeedbacks(conditionList, departmentCondition, activeUser)
     }
-
 }
