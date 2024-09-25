@@ -19,6 +19,7 @@ class AuthenticationFilter : ContainerRequestFilter {
     companion object {
         const val cookieName = "Jwt"
         const val ignoreThisUrl = "api/login"
+        const val activeUserPropertyName = "activeUser"
     }
 
     override fun filter(requestContext: ContainerRequestContext) {
@@ -29,12 +30,17 @@ class AuthenticationFilter : ContainerRequestFilter {
         val claims = verifyAndExtractClaims(jwtCookie, requestContext)
         claims?.let {
             val activeUser =
-                ActiveUser(UUID.fromString(it["employeeId"].toString()), UUID.fromString(it["companyId"].toString()), Role.valueOf(it["role"].toString().uppercase()), Department.valueOf(it["department"].toString().uppercase()))
+                ActiveUser(
+                    UUID.fromString(it["employeeId"].toString()),
+                    UUID.fromString(it["companyId"].toString()),
+                    Role.valueOf(it["role"]!!.uppercase()),
+                    Department.valueOf(it["department"]!!.uppercase())
+                )
             requestContext.setProperty("activeUser", activeUser)
         }
     }
 
-    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, String?>? {
+    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, String>? {
         return cookie?.let {
             try {
                 val claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(it).body
