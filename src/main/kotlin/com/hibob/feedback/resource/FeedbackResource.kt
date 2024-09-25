@@ -9,8 +9,6 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Component
 import java.util.*
 import jakarta.ws.rs.core.MediaType
-import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
 
 
 @Component
@@ -43,8 +41,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
 
     private fun throwIfNotAuthorized(activeUser: ActiveUser) {
         if (!(activeUser.department == Department.HR || activeUser.role == Role.ADMIN)) {
-            throw ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
+            throw NotAuthorizedException(
                 "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
             )
         }
