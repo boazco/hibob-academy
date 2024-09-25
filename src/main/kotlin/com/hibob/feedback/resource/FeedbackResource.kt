@@ -1,5 +1,6 @@
 package com.hibob.feedback.resource
 
+import com.hibob.academy.filters.AuthenticationFilter.Companion.activeUserPropertyName
 import com.hibob.feedback.service.FeedbackService
 import com.hibob.feedback.dao.*
 import jakarta.ws.rs.*
@@ -26,7 +27,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     }
 
     private fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
-        return requestContext.getProperty("activeUser") as? ActiveUser
+        return requestContext.getProperty(activeUserPropertyName) as? ActiveUser
             ?: throw BadRequestException("user is not an active user")
     }
 
@@ -36,8 +37,8 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         @PathParam("feedbackId") feedbackId: UUID,
         @Context requestContext: ContainerRequestContext
     ): Response {
-        val activeUser = requestContext.getProperty("activeUser") as? ActiveUser
-        activeUser ?: throw BadRequestException("user is not an active user")
+        val activeUser = getActiveUserOrThrow(requestContext)
+
         throwIfNotAuthorized(activeUser)
         val feedback = feedbackService.getFeedback(feedbackId, activeUser)
         return Response.ok(feedback).build()

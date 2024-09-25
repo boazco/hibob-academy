@@ -1,12 +1,16 @@
 package com.hibob.academy.filters
 
 import com.hibob.academy.service.SessionService.Companion.SECRET_KEY
+import com.hibob.feedback.dao.ActiveUser
+import com.hibob.feedback.dao.Department
+import com.hibob.feedback.dao.Role
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.Provider
 import org.springframework.stereotype.Component
 import io.jsonwebtoken.Jwts
+import java.util.UUID
 
 
 @Component
@@ -15,8 +19,8 @@ class AuthenticationFilter : ContainerRequestFilter {
     companion object {
         const val cookieName = "Jwt"
         const val ignoreThisUrl = "api/login"
-        const val employeeIdHeader = "X-Employee-Id"
-        const val companyIdHeader = "X-Company-Id"    }
+        const val activeUserPropertyName = "activeUser"
+    }
 
     override fun filter(requestContext: ContainerRequestContext) {
 
@@ -24,25 +28,26 @@ class AuthenticationFilter : ContainerRequestFilter {
 
         val jwtCookie = requestContext.cookies[cookieName]?.value
         val claims = verifyAndExtractClaims(jwtCookie, requestContext)
-        claims?.let{
-            //TO DO: create a User object here and store that as a request attribute
-            requestContext.headers.add(employeeIdHeader, it["employeeId"].toString())
-            requestContext.headers.add(companyIdHeader, it["companyId"].toString())
+        claims?.let {
+            val activeUser =
+                ActiveUser(
+                    UUID.fromString(it["employeeId"].toString()),
+                    UUID.fromString(it["companyId"].toString()),
+                    Role.valueOf(it["role"]!!.uppercase()),
+                    Department.valueOf(it["department"]!!.uppercase())
+                )
+            requestContext.setProperty("activeUser", activeUser)
         }
     }
 
-    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, String?>? {
+    fun verifyAndExtractClaims(cookie: String?, requestContext: ContainerRequestContext): Map<String, String>? {
         return cookie?.let {
             try {
-                val claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(it)
-                    .body
+                val claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(it).body
 
                 mapOf(
-                    "employeeId" to claims["employeeId"].toString(),
-                    "companyId" to claims["companyId"].toString()
+                    "employeeId" to claims["employeeId"].toString(), "companyId" to claims["companyId"].toString(),
+                    "role" to claims["role"].toString(), "department" to claims["department"].toString(),
                 )
             } catch (e: Exception) {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build())
