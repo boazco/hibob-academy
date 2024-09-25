@@ -3,16 +3,13 @@ package com.hibob.feedback.dao
 
 import com.hibob.academy.utils.JooqTable
 import jakarta.ws.rs.BadRequestException
-
-import org.jooq.DSLContext
-import org.jooq.RecordMapper
+import org.jooq.*
 import org.springframework.stereotype.Repository
-import org.jooq.Record
 import java.util.*
 
 
 @Repository
-class FeedbackDao(private val sql: DSLContext) {
+class FeedbackDao(private val sql: DSLContext, private val employeesDao: EmployeesDao) {
 
     class FeedbackTable(tablename: String) : JooqTable(tablename) {
         val feedbackId = createUUIDField("id")
@@ -27,7 +24,7 @@ class FeedbackDao(private val sql: DSLContext) {
         }
     }
 
-
+    private val employeeTable = EmployeesDao.EmployeesTable.instance
     private val feedbackTables = FeedbackTable.instance
 
 
@@ -74,9 +71,24 @@ class FeedbackDao(private val sql: DSLContext) {
 
     fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser): Int {
         return sql.update(feedbackTables)
-        .set(feedbackTables.status, status.toString())
+            .set(feedbackTables.status, status.toString())
             .where(feedbackTables.feedbackId.eq(feedbackId))
             .and(feedbackTables.companyId.eq(activeUser.companyId))
             .execute()
+    }
+
+    fun filterFeedbacks(conditions: List<Condition>, departmentCondition: Boolean, activeUser: ActiveUser): List<Feedback>? {
+        var query = sql.select()
+            .from(feedbackTables)
+
+        if(departmentCondition) {
+            query = query.join(employeeTable)
+                .on(employeeTable.employeeId.eq(feedbackTables.employeeId))
+        }
+
+        query = query.where(feedbackTables.companyId.eq(activeUser.companyId))
+        val cond = conditions.reduce{acc, condition -> acc.and(condition)}
+        query = query.and(cond)
+        return query.fetch(feedbackMapper)
     }
 }
