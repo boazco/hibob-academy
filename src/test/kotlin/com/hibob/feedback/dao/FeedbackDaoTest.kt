@@ -85,4 +85,15 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
         val feedbackId = feedbackDao.createFeedback(feedback.copy(isAnonymous = true), activeUser)
         assertEquals("feedback not found" , org.junit.jupiter.api.assertThrows<BadRequestException> { feedbackDao.getStatus(feedbackId, activeUser) }.message)
     }
+
+    @Test
+    fun `update should update feedback status`() {
+        val feedbackId = feedbackDao.createFeedback(feedback, activeUser)
+        assertEquals(Status.UNREVIEWED, feedbackDao.getStatus(feedbackId, activeUser))
+        feedbackDao.changeStatus(feedbackId, Status.REVIEWED, activeUser)
+        assertEquals(Status.REVIEWED, feedbackDao.getStatus(feedbackId, activeUser))
+        feedbackDao.changeStatus(feedbackId, Status.UNREVIEWED, activeUser)
+        assertEquals(Status.UNREVIEWED, feedbackDao.getStatus(feedbackId, activeUser))
+    }
+
 }
