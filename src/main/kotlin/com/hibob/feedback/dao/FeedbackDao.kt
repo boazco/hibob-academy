@@ -61,4 +61,14 @@ class FeedbackDao(private val sql: DSLContext) {
             .fetchOne(feedbackMapper)
             ?: throw BadRequestException("Feedback not found")
     }
+
+    fun getStatus(feedbackId: UUID, activeUser: ActiveUser): Status {
+        return sql.select(feedbackTables.status)
+            .from(feedbackTables)
+            .where(feedbackTables.feedbackId.eq(feedbackId))
+            .and(feedbackTables.companyId.eq(activeUser.companyId))
+            .and(feedbackTables.employeeId.eq(activeUser.employeeId))
+            .fetchOne()?.let { Status.valueOf(it[feedbackTables.status].toString().uppercase()) }
+            ?: throw BadRequestException("feedback not found")
+    }
 }
