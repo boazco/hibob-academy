@@ -2,6 +2,8 @@ package com.hibob.academy.filters
 
 import com.hibob.academy.service.SessionService.Companion.SECRET_KEY
 import com.hibob.feedback.dao.ActiveUser
+import com.hibob.feedback.dao.Department
+import com.hibob.feedback.dao.Role
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
 import jakarta.ws.rs.core.Response
@@ -27,7 +29,7 @@ class AuthenticationFilter : ContainerRequestFilter {
         val claims = verifyAndExtractClaims(jwtCookie, requestContext)
         claims?.let {
             val activeUser =
-                ActiveUser(UUID.fromString(it["employeeId"].toString()), UUID.fromString(it["companyId"].toString()))
+                ActiveUser(UUID.fromString(it["employeeId"].toString()), UUID.fromString(it["companyId"].toString()), Role.valueOf(it["role"].toString().uppercase()), Department.valueOf(it["department"].toString().uppercase()))
             requestContext.setProperty("activeUser", activeUser)
         }
     }
@@ -38,7 +40,8 @@ class AuthenticationFilter : ContainerRequestFilter {
                 val claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(it).body
 
                 mapOf(
-                    "employeeId" to claims["employeeId"].toString(), "companyId" to claims["companyId"].toString()
+                    "employeeId" to claims["employeeId"].toString(), "companyId" to claims["companyId"].toString(),
+                    "role" to claims["role"].toString(), "department" to claims["department"].toString(),
                 )
             } catch (e: Exception) {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build())

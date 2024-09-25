@@ -1,6 +1,5 @@
 package com.hibob.academy.service
 
-import com.hibob.academy.resource.SessionApi.User
 import com.hibob.feedback.dao.ActiveUser
 import com.hibob.feedback.dao.EmployeesDao
 import io.jsonwebtoken.Jwts
@@ -24,6 +23,8 @@ class SessionService(private val employeesDao: EmployeesDao) {
             .setHeaderParam("typ", "JWT")
             .claim("employeeId", activeUser.employeeId)
             .claim("companyId", activeUser.companyId)
+            .claim("role", activeUser.role)
+            .claim("department", activeUser.department)
             //TO DO: verify that the employee exists in this company (check in DB) and get his role from DB and add claim
             .setExpiration(Date.from(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)))
             .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
