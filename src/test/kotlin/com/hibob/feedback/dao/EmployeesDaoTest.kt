@@ -29,39 +29,22 @@ class EmployeesDaoTest @Autowired constructor(private val sql: DSLContext) {
     }
 
     @Test
-    fun `get employee department`() {
-        val employeeId = employeesDao.createEmployee("Hi", "Bob", "admin", companyId, "HR")
-        assertEquals("HR", employeesDao.getDepartmentById(employeeId, companyId))
-    }
-
-    @Test
-    fun `get employee role`() {
-        val employeeId = employeesDao.createEmployee("Hi", "Bob", "admin", companyId, "HR")
-        assertEquals("admin", employeesDao.getRoleById(employeeId, companyId))
-    }
-
-    @Test
-    fun `throwing exception when no employee exists - department`() {
+    fun `get employee`() {
+        val employeeId = employeesDao.createEmployee("Hi", "Bob", "Admin", companyId, "HR")
         assertEquals(
-            "No employee with that id",
-            org.junit.jupiter.api.assertThrows<BadRequestException> {
-                employeesDao.getDepartmentById(
-                    UUID.randomUUID(),
-                    companyId
-                )
-            }.message
+            Employee(employeeId, companyId, Role.ADMIN, Department.HR),
+            employeesDao.getEmployeeByActiveUser(ActiveUser(employeeId, companyId))
         )
+
     }
 
+
     @Test
-    fun `throwing exception when no employee exists - role`() {
+    fun `throwing exception when no employee exists`() {
         assertEquals(
             "No employee with that id",
             org.junit.jupiter.api.assertThrows<BadRequestException> {
-                employeesDao.getRoleById(
-                    UUID.randomUUID(),
-                    companyId
-                )
+                employeesDao.getEmployeeByActiveUser(ActiveUser(UUID.randomUUID(), companyId))
             }.message
         )
     }
