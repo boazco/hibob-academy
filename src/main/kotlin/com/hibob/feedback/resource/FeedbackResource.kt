@@ -20,10 +20,14 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @POST
     @Path("/v1/create")
     fun createFeedback(feedbackInput: FeedbackInput, @Context requestContext: ContainerRequestContext): Response {
-        val activeUser = requestContext.getProperty("activeUser") as? ActiveUser
-        activeUser ?: throw BadRequestException("user is not an active user")
+        val activeUser = getActiveUserOrThrow(requestContext)
         val feedbackId = feedbackService.createFeedback(feedbackInput, activeUser)
         return Response.ok(feedbackId).build()
+    }
+
+    private fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
+        return requestContext.getProperty("activeUser") as? ActiveUser
+            ?: throw BadRequestException("user is not an active user")
     }
 
     @GET
