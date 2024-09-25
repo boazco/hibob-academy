@@ -33,7 +33,7 @@ class EmployeesDaoTest @Autowired constructor(private val sql: DSLContext) {
         val employeeId = employeesDao.createEmployee("Hi", "Bob", "Admin", companyId, "HR")
         assertEquals(
             Employee(employeeId, companyId, Role.ADMIN, Department.HR),
-            employeesDao.getEmployeeByActiveUser(ActiveUser(employeeId, companyId))
+            employeesDao.getEmployeeByActiveUser(ActiveUser(employeeId, companyId, Role.ADMIN, Department.HR))
         )
 
     }
@@ -44,7 +44,7 @@ class EmployeesDaoTest @Autowired constructor(private val sql: DSLContext) {
         assertEquals(
             "No employee with that id",
             org.junit.jupiter.api.assertThrows<BadRequestException> {
-                employeesDao.getEmployeeByActiveUser(ActiveUser(UUID.randomUUID(), companyId))
+                employeesDao.getEmployeeByActiveUser(ActiveUser(UUID.randomUUID(), companyId, Role.EMPLOYEE, Department.HR))
             }.message
         )
     }
