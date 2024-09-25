@@ -18,7 +18,9 @@ data class FeedbackInput(
 
 data class ActiveUser(
     val employeeId: UUID,
-    val companyId: UUID
+    val companyId: UUID,
+    val role: Role,
+    val department: Department
 )
 
 data class Employee(
