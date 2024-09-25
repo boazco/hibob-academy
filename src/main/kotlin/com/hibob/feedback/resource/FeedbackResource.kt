@@ -38,6 +38,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         @Context requestContext: ContainerRequestContext
     ): Response {
         val activeUser = getActiveUserOrThrow(requestContext)
+
         throwIfNotAuthorized(activeUser)
         val feedback = feedbackService.getFeedback(feedbackId, activeUser)
         return Response.ok(feedback).build()
