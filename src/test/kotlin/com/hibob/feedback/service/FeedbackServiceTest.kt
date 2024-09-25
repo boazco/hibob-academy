@@ -70,4 +70,10 @@ class FeedbackServiceTest {
         assertEquals(returningFeedback, service.getFeedback(feedbackId, activeUser))
     }
 
+    @Test
+    fun `throws when no feedback is found`(){
+        whenever(feedbackDaoMock.changeStatus(feedbackId, Status.UNREVIEWED, activeUser)).thenReturn(0)
+        assertEquals("No feedback found  with that id", org.junit.jupiter.api.assertThrows<BadRequestException> { service.changeStatus(feedbackId,Status.UNREVIEWED, activeUser) }.message)
+    }
+
 }
