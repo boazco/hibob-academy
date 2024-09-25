@@ -1,5 +1,6 @@
 package com.hibob.feedback.resource
 
+import com.hibob.feedback.service.FeedbackService
 import com.hibob.feedback.dao.*
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.Response
@@ -12,23 +13,21 @@ import jakarta.ws.rs.core.MediaType
 @Path("/feedback")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class FeedbackResource(/*feedback Serrvice*/) {
+class FeedbackResource(private val feedbackService: FeedbackService) {
 
     @POST
     @Path("/v1/create")
     fun createFeedback(feedbackInput: FeedbackInput): Response {
-        val activeUser = 0
-        //send the service active user and feedbackInput.
-        return Response.ok().build() //TO DO CHANGE IT to return the output from the service.
+        val activeUser = ActiveUser(UUID.randomUUID(), UUID.randomUUID()) //TO DO: change it to take proprties from the header
+        val feedbackId = feedbackService.createFeedback(feedbackInput, activeUser)
+        return Response.ok(feedbackId).build()
     }
 
     @GET
     @Path("/v1/feedbackId/{feedbackId}")
     fun getFeedback(@PathParam("feedbackId") feedbackId: UUID): Response {
-        val activeUser = 0
-        //send the service active user and feedbackId.
-        return Response.ok().build() //TO DO CHANGE IT to return the output from the service.
+        val activeUser = ActiveUser(UUID.randomUUID(), UUID.randomUUID()) //TO DO: change it to take proprties from the header
+        val feedback = feedbackService.getFeedback(feedbackId, activeUser)
+        return Response.ok(feedback).build()
     }
-
-
 }

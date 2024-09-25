@@ -2,6 +2,7 @@ package com.hibob.feedback.dao
 
 import org.junit.jupiter.api.Test
 import com.hibob.academy.utils.BobDbTest
+import jakarta.ws.rs.BadRequestException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -49,11 +50,27 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     @Test
     fun `create and the get should return feedback`() {
         val feedbackId = feedbackDao.createFeedback(feedback, activeUser)
-        assertEquals(Feedback(id = feedbackId, Date.valueOf(LocalDate.now()), companyId, feedback.feedbackMessage, activeUser.employeeId), feedbackDao.getFeedback(feedbackId, activeUser))
+        assertEquals(
+            Feedback(
+                id = feedbackId,
+                Date.valueOf(LocalDate.now()),
+                companyId,
+                feedback.feedbackMessage,
+                activeUser.employeeId
+            ), feedbackDao.getFeedback(feedbackId, activeUser)
+        )
     }
 
     @Test
     fun `get where no feedback with that ID return null`() {
-        assertEquals(null, feedbackDao.getFeedback(UUID.randomUUID(), activeUser))
+        assertEquals(
+            "Feedback not found",
+            org.junit.jupiter.api.assertThrows<BadRequestException> {
+                feedbackDao.getFeedback(
+                    UUID.randomUUID(),
+                    activeUser
+                )
+            }.message
+        )
     }
 }
