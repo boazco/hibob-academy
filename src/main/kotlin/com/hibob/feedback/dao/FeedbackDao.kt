@@ -72,8 +72,8 @@ class FeedbackDao(private val sql: DSLContext) {
             ?: throw BadRequestException("feedback not found")
     }
 
-    fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser) {
-        sql.update(feedbackTables)
+    fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser): Int {
+        return sql.update(feedbackTables)
         .set(feedbackTables.status, status.toString())
             .where(feedbackTables.feedbackId.eq(feedbackId))
             .and(feedbackTables.companyId.eq(activeUser.companyId))
