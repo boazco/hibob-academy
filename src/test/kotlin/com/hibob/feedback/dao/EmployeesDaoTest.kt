@@ -1,7 +1,6 @@
 package com.hibob.feedback.dao
 
 import com.hibob.academy.utils.BobDbTest
-import jakarta.ws.rs.BadRequestException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -26,26 +25,5 @@ class EmployeesDaoTest @Autowired constructor(private val sql: DSLContext) {
     fun `create new employee`() {
         val employeeId = employeesDao.createEmployee("Hi", "Bob", "admin", companyId, "HR")
         assertTrue(employeeId is UUID)
-    }
-
-    @Test
-    fun `get employee`() {
-        val employeeId = employeesDao.createEmployee("Hi", "Bob", "Admin", companyId, "HR")
-        assertEquals(
-            Employee(employeeId, companyId, Role.ADMIN, Department.HR),
-            employeesDao.getEmployeeByActiveUser(ActiveUser(employeeId, companyId))
-        )
-
-    }
-
-
-    @Test
-    fun `throwing exception when no employee exists`() {
-        assertEquals(
-            "No employee with that id",
-            org.junit.jupiter.api.assertThrows<BadRequestException> {
-                employeesDao.getEmployeeByActiveUser(ActiveUser(UUID.randomUUID(), companyId))
-            }.message
-        )
     }
 }

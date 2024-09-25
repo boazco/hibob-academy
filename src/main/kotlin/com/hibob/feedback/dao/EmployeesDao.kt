@@ -1,7 +1,6 @@
 package com.hibob.feedback.dao
 
 import com.hibob.academy.utils.JooqTable
-import jakarta.ws.rs.BadRequestException
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.RecordMapper
@@ -44,15 +43,6 @@ class EmployeesDao(private val sql: DSLContext) {
             .set(employeesTable.department, department)
             .returning(employeesTable.employeeId)
             .fetchOne()!![employeesTable.employeeId]
-    }
-
-    fun getEmployeeByActiveUser(activeUser: ActiveUser): Employee {
-        return sql.select()
-            .from(employeesTable)
-            .where(employeesTable.employeeId.eq(activeUser.employeeId))
-            .and(employeesTable.companyId.eq(activeUser.companyId))
-            .fetchOne(employeeMapper)
-            ?: throw BadRequestException("No employee with that id")
     }
 
 }

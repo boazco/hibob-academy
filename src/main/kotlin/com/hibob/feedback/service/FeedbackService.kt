@@ -9,13 +9,13 @@ import java.util.*
 @Component
 class FeedbackService(private val feedbackDao: FeedbackDao, private val employeesDao: EmployeesDao) {
 
-    fun createFeedback(feedbackInput: FeedbackInput, activeUser: ActiveUser): UUID {
+    fun createFeedback(feedbackInput: FeedbackInput, activeUser: Employee): UUID {
         return feedbackDao.createFeedback(feedbackInput, activeUser)
     }
 
-    fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback? {
+    fun getFeedback(feedbackId: UUID, activeUser: Employee): Feedback? {
         val feedback = feedbackDao.getFeedback(feedbackId, activeUser)
-        if (isNotAuthorized(employeesDao.getEmployeeByActiveUser(activeUser), feedback)) {
+        if (isNotAuthorized(activeUser, feedback)) {
             throw ResponseStatusException(
                 HttpStatus.UNAUTHORIZED,
                 "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"

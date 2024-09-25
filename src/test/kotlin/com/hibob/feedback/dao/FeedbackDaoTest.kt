@@ -23,7 +23,7 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     private val feedback1 =
         FeedbackInput("Another feedback for testing!", false)
     private val feedback2 = FeedbackInput("Another one", false)
-    private val activeUser = ActiveUser(UUID.randomUUID(), companyId)
+    private val activeUser = Employee(UUID.randomUUID(), companyId, Role.ADMIN, Department.HR)
 
     @BeforeEach
     @AfterEach

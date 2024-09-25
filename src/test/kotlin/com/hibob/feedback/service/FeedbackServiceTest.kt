@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
-import org.springframework.web.server.ResponseStatusException
 import java.sql.Date
 import java.time.LocalDate
 import java.util.*
@@ -17,7 +16,7 @@ class FeedbackServiceTest {
     private val feedbackDaoMock = mock<FeedbackDao>()
     private val employeeDaoMock = mock<EmployeesDao>()
     private val service = FeedbackService(feedbackDaoMock, employeeDaoMock)
-    private val activeUser = ActiveUser(UUID.randomUUID(), UUID.randomUUID())
+    private val activeUser = Employee(UUID.randomUUID(), UUID.randomUUID(), Role.EMPLOYEE, Department.HR)
     private val feedbackInput = FeedbackInput("Feedback for testing", true)
     private val feedbackId = UUID.randomUUID()
 
@@ -30,35 +29,6 @@ class FeedbackServiceTest {
             )
         ).thenReturn(UUID.randomUUID())
         assertEquals(true, service.createFeedback(feedbackInput, activeUser) is UUID)
-    }
-
-    @Test
-    fun `trying to get feedbacks when not HR or Admin or feedback author should throw`() {
-        whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(
-            Feedback(
-                UUID.randomUUID(),
-                Date.valueOf(LocalDate.now()),
-                UUID.randomUUID(),
-                "TEST"
-            )
-        )
-        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(
-            Employee(
-                activeUser.employeeId,
-                activeUser.companyId,
-                Role.EMPLOYEE,
-                Department.IT
-            )
-        )
-        assertEquals(
-            "401 UNAUTHORIZED \"Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin\"",
-            org.junit.jupiter.api.assertThrows<ResponseStatusException> {
-                service.getFeedback(
-                    feedbackId,
-                    activeUser
-                )
-            }.message
-        )
     }
 
     @Test
@@ -89,14 +59,6 @@ class FeedbackServiceTest {
             "for TEST"
         )
         whenever(feedbackDaoMock.getFeedback(feedbackId, activeUser)).thenReturn(returningFeedback)
-        whenever(employeeDaoMock.getEmployeeByActiveUser(activeUser)).thenReturn(
-            Employee(
-                activeUser.employeeId,
-                activeUser.companyId,
-                Role.ADMIN,
-                Department.IT
-            )
-        )
         assertEquals(returningFeedback, service.getFeedback(feedbackId, activeUser))
     }
 

@@ -42,7 +42,7 @@ class FeedbackDao(private val sql: DSLContext) {
     }
 
 
-    fun createFeedback(feedback: FeedbackInput, activeUser: ActiveUser): UUID {
+    fun createFeedback(feedback: FeedbackInput, activeUser: Employee): UUID {
         return sql.insertInto(feedbackTables)
             .set(feedbackTables.employeeId, if (feedback.isAnonymous) null else activeUser.employeeId)
             .set(feedbackTables.companyId, activeUser.companyId)
@@ -53,7 +53,7 @@ class FeedbackDao(private val sql: DSLContext) {
     }
 
 
-    fun getFeedback(feedbackId: UUID, activeUser: ActiveUser): Feedback {
+    fun getFeedback(feedbackId: UUID, activeUser: Employee): Feedback {
         return sql.select()
             .from(feedbackTables)
             .where(feedbackTables.feedbackId.eq(feedbackId))
