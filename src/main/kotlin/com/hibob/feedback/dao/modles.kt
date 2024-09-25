@@ -30,6 +30,12 @@ data class Employee(
     val department: Department
 )
 
+data class Filter(
+    val isAnonymous: Boolean? = null,
+    val department: Department? = null,
+    val date: Date? = null
+)
+
 enum class Department{
     RD,
     IT,
