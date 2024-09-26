@@ -35,7 +35,6 @@ class SessionService(private val employeesDao: EmployeesDao) {
         val employee =
             employeesDao.getEmployeeByActiveUser(activeUser) //throws if no employee with this id in this company
         if (employee.role != activeUser.role || employee.department != activeUser.department) {
-            throw BadRequestException("The employee info is not accurate (Role/Department)")
             throw NotAuthorizedException("The employee info is not accurate (Role/Department)")
         }
     }

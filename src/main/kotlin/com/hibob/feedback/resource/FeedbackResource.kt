@@ -53,4 +53,10 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         }
     }
 
+    @GET
+    @Path("/v1/getFeedbackStatus/{feedbackId}")
+    fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
+        return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
+    }
+
 }
