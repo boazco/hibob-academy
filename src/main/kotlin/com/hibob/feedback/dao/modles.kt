@@ -30,7 +30,6 @@ data class Employee(
     val department: Department
 )
 
-
 enum class Department{
     RD,
     IT,
