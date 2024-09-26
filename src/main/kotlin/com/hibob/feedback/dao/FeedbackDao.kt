@@ -78,16 +78,16 @@ class FeedbackDao(private val sql: DSLContext, private val employeesDao: Employe
     }
 
     fun filterFeedbacks(conditions: List<Condition>, departmentCondition: Boolean, activeUser: ActiveUser): List<Feedback>? {
-        var query = sql.select()
+        val query = sql.select()
             .from(feedbackTables)
 
-        if(departmentCondition) {
-            query = query.join(employeeTable)
+        val finalQuery = if(departmentCondition) {
+            query.join(employeeTable)
                 .on(employeeTable.employeeId.eq(feedbackTables.employeeId))
-        }
+        } else query
 
-        var conditionQuery = query.where(feedbackTables.companyId.eq(activeUser.companyId))
-        conditionQuery = conditionQuery.and(conditions.reduce{acc, condition -> acc.and(condition)})
-        return conditionQuery.fetch(feedbackMapper)
+        val conditionQuery = finalQuery.where(feedbackTables.companyId.eq(activeUser.companyId))
+        val lastQuery = conditionQuery.and(conditions.reduce{acc, condition -> acc.and(condition)})
+        return lastQuery.fetch(feedbackMapper)
     }
 }

@@ -60,6 +60,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
     }
 
+    //to chang it to post so i can recive body
     @GET
     @Path("/v1/filterFeedbacks")
     fun filterFeedbacks(

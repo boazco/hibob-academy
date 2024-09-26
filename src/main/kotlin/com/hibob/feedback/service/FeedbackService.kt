@@ -31,6 +31,7 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
     }
 
     fun filterFeedbacks(condition: Filter, activeUser: ActiveUser): List<Feedback>? {
+        //all jOOQ related need to be in dao
         val table = FeedbackTable.instance
         val employeeTable = EmployeesDao.EmployeesTable.instance
         val conditionList = ArrayList<Condition>()
