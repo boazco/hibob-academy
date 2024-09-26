@@ -3,6 +3,7 @@ package com.hibob.feedback.dao
 import org.junit.jupiter.api.Test
 import com.hibob.academy.utils.BobDbTest
 import jakarta.ws.rs.BadRequestException
+import jakarta.ws.rs.NotFoundException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -83,6 +84,6 @@ class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
     @Test
     fun `get status of anonymous feedback throws`(){
         val feedbackId = feedbackDao.createFeedback(feedback.copy(isAnonymous = true), activeUser)
-        assertEquals("feedback not found" , org.junit.jupiter.api.assertThrows<BadRequestException> { feedbackDao.getStatus(feedbackId, activeUser) }.message)
+        assertEquals("feedback not found" , org.junit.jupiter.api.assertThrows<NotFoundException> { feedbackDao.getStatus(feedbackId, activeUser) }.message)
     }
 }
