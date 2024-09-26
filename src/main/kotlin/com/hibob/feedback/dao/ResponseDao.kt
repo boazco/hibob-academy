@@ -3,8 +3,6 @@ package com.hibob.feedback.dao
 import com.hibob.academy.utils.JooqTable
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import java.sql.Date
-import java.time.LocalDate
 import java.util.*
 
 @Repository
@@ -28,9 +26,7 @@ class ResponseDao(private val sql: DSLContext) {
 
     fun createResponse(response: ResponseInput, activeUser: ActiveUser): UUID {
         return sql.insertInto(responseTable)
-            .set(responseTable.responseId, UUID.randomUUID())
             .set(responseTable.employeeId, response.employeeId)
-            .set(responseTable.creationDate, Date.valueOf(LocalDate.now()))
             .set(responseTable.companyId, activeUser.companyId)
             .set(responseTable.feedbackId, response.feedbackId)
             .set(responseTable.responseMessage, response.responseMessage)
