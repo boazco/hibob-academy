@@ -7,9 +7,10 @@ import java.util.*
 @Component
 class ResponseService(private val responseDao: ResponseDao, private val feedbackDao: FeedbackDao) {
 
-    fun createResponse(reaponse: ResponseInput, activeUser: ActiveUser): UUID {
-        val responseId = responseDao.createResponse(reaponse, activeUser)
-
+    fun createResponse(response: ResponseInput, activeUser: ActiveUser): UUID {
+        feedbackDao.getFeedback(response.feedbackId, activeUser) //throws if feedback not found
+        val responseId = responseDao.createResponse(response, activeUser)
+        feedbackDao.changeStatus(response.feedbackId, Status.REVIEWED, activeUser)
         return responseId
     }
 }

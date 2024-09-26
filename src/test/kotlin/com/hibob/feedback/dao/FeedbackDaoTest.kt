@@ -14,7 +14,7 @@ import java.util.*
 
 @BobDbTest
 class FeedbackDaoTest @Autowired constructor(private val sql: DSLContext) {
-    private val feedbackDao = FeedbackDao(sql)
+    private val feedbackDao = FeedbackDao(sql, EmployeesDao(sql))
     private val feedbackTable = FeedbackDao.FeedbackTable.instance
     private val companyId = UUID.randomUUID()
 

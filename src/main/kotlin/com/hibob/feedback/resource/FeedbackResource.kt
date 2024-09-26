@@ -1,5 +1,6 @@
 package com.hibob.feedback.resource
 
+import com.hibob.academy.filters.AuthenticationFilter.Companion.activeUserPropertyName
 import com.hibob.feedback.service.FeedbackService
 import com.hibob.feedback.dao.*
 import jakarta.ws.rs.*
@@ -26,7 +27,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return Response.ok(feedbackId).build()
     }
 
-    private fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
+    fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
         return requestContext.getProperty(activeUserPropertyName) as? ActiveUser
             ?: throw BadRequestException("user is not an active user")
     }
@@ -45,7 +46,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return Response.ok(feedback).build()
     }
 
-    private fun throwIfNotAuthorized(activeUser: ActiveUser) {
+    fun throwIfNotAuthorized(activeUser: ActiveUser) {
         if (!(activeUser.department == Department.HR || activeUser.role == Role.ADMIN)) {
             throw NotAuthorizedException(
                 "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
@@ -57,7 +58,6 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @Path("/v1/getFeedbackStatus/{feedbackId}")
     fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
-        return Response.ok(feedback).build() //TO DO CHANGE IT to return the output from the service.
     }
 
     //to chang it to post so i can recive body
@@ -72,7 +72,6 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         throwIfNotAuthorized(activeUser)
         return Response.ok(feedbackService.filterFeedbacks(filter, activeUser)).build()
     }
-
 
 
 }
