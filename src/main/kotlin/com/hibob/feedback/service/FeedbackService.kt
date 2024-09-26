@@ -4,6 +4,7 @@ import com.hibob.feedback.dao.*
 import com.hibob.feedback.dao.ActiveUser
 import com.hibob.feedback.dao.Feedback
 import com.hibob.feedback.dao.FeedbackInput
+import jakarta.ws.rs.BadRequestException
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -22,5 +23,11 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
     fun getStatus(feedbackId: UUID, activeUser: ActiveUser): Status{
         return feedbackDao.getStatus(feedbackId, activeUser)
     }
+
+    fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser) {
+        if (feedbackDao.changeStatus(feedbackId, status, activeUser) == 0)
+            throw BadRequestException("No feedback found  with that id")
+    }
+
 
 }

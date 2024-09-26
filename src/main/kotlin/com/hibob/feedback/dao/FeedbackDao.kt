@@ -6,8 +6,8 @@ import jakarta.ws.rs.BadRequestException
 import jakarta.ws.rs.NotFoundException
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
+import org.jooq.*
 import org.springframework.stereotype.Repository
-import org.jooq.Record
 import java.util.*
 
 
@@ -71,4 +71,13 @@ class FeedbackDao(private val sql: DSLContext) {
             .fetchOne()?.let { Status.valueOf(it[feedbackTables.status].toString().uppercase()) }
             ?: throw NotFoundException("feedback not found")
     }
+
+    fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser): Int {
+        return sql.update(feedbackTables)
+            .set(feedbackTables.status, status.toString())
+            .where(feedbackTables.feedbackId.eq(feedbackId))
+            .and(feedbackTables.companyId.eq(activeUser.companyId))
+            .execute()
+    }
+
 }

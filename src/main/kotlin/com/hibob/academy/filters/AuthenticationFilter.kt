@@ -36,7 +36,7 @@ class AuthenticationFilter : ContainerRequestFilter {
                     Role.valueOf(it["role"]!!.uppercase()),
                     Department.valueOf(it["department"]!!.uppercase())
                 )
-            requestContext.setProperty(activeUserPropertyName, activeUser)
+            requestContext.setProperty("activeUser", activeUser)
         }
     }
 
