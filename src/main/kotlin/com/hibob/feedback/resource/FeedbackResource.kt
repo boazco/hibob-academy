@@ -26,7 +26,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return Response.ok(feedbackId).build()
     }
 
-    private fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
+    fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
         return requestContext.getProperty(activeUserPropertyName) as? ActiveUser
             ?: throw BadRequestException("user is not an active user")
     }
@@ -45,7 +45,7 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
         return Response.ok(feedback).build() //TO DO CHANGE IT to return the output from the service.
     }
 
-    private fun throwIfNotAuthorized(activeUser: ActiveUser) {
+    fun throwIfNotAuthorized(activeUser: ActiveUser) {
         if (!(activeUser.department == Department.HR || activeUser.role == Role.ADMIN)) {
             throw NotAuthorizedException(
                 "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
