@@ -8,19 +8,17 @@ import jakarta.ws.rs.BadRequestException
 import jakarta.ws.rs.NotAuthorizedException
 import jakarta.ws.rs.container.ContainerRequestContext
 
-class UserAuthentication {
-    companion object {
-        fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
-            return requestContext.getProperty(activeUserPropertyName) as? ActiveUser
-                ?: throw BadRequestException("user is not an active user")
-        }
+object UserAuthentication {
+    fun getActiveUserOrThrow(requestContext: ContainerRequestContext): ActiveUser {
+        return requestContext.getProperty(activeUserPropertyName) as? ActiveUser
+            ?: throw BadRequestException("user is not an active user")
+    }
 
-        fun throwIfNotAuthorized(activeUser: ActiveUser) {
-            if (!(activeUser.department == Department.HR || activeUser.role == Role.ADMIN)) {
-                throw NotAuthorizedException(
-                    "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
-                )
-            }
+    fun throwIfNotAuthorized(activeUser: ActiveUser) {
+        if (!(activeUser.department == Department.HR || activeUser.role == Role.ADMIN)) {
+            throw NotAuthorizedException(
+                "Unauthorized Access- Trying to fetch feedback which is not yours, while youre not HR or admin"
+            )
         }
     }
 }
