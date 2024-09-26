@@ -20,7 +20,7 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
         return feedback
     }
 
-    fun getStatus(feedbackId: UUID, activeUser: ActiveUser): Status {
+    fun getStatus(feedbackId: UUID, activeUser: ActiveUser): Status{
         return feedbackDao.getStatus(feedbackId, activeUser)
     }
 
