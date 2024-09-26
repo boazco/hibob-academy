@@ -3,7 +3,7 @@ package com.hibob.feedback.dao
 
 import com.hibob.academy.utils.JooqTable
 import jakarta.ws.rs.BadRequestException
-
+import jakarta.ws.rs.NotFoundException
 import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import org.springframework.stereotype.Repository
@@ -69,6 +69,6 @@ class FeedbackDao(private val sql: DSLContext) {
             .and(feedbackTables.companyId.eq(activeUser.companyId))
             .and(feedbackTables.employeeId.eq(activeUser.employeeId))
             .fetchOne()?.let { Status.valueOf(it[feedbackTables.status].toString().uppercase()) }
-            ?: throw BadRequestException("feedback not found")
+            ?: throw NotFoundException("feedback not found")
     }
 }
