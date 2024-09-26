@@ -14,16 +14,15 @@ import org.springframework.stereotype.Component
 @Path("/api/response")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class ResponseResource(private val responseService: ResponseService, private val feedbackResource: FeedbackResource) {
+class ResponseResource(private val responseService: ResponseService) {
 
     @POST
-    @Path("/v1/create")
+    @Path("/v1")
     fun createResponse(response: ResponseInput, @Context requestContext: ContainerRequestContext): Response {
-        val activeUser = feedbackResource.getActiveUserOrThrow(requestContext)
-        feedbackResource.throwIfNotAuthorized(activeUser)
+        val activeUser = UserAuthentication.getActiveUserOrThrow(requestContext)
+        UserAuthentication.throwIfNotAuthorized(activeUser)
         val responseId = responseService.createResponse(response, activeUser)
         return Response.ok(responseId).build()
     }
-
 
 }
