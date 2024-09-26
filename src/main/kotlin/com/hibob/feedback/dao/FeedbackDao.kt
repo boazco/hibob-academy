@@ -80,4 +80,47 @@ class FeedbackDao(private val sql: DSLContext) {
             .execute()
     }
 
+    fun filterFeedbacks(filter: Filter, activeUser: ActiveUser): List<Feedback>? {
+        val query = sql.select()
+            .from(feedbackTables)
+        val queryWIthJoinAndDepartmentCondition = addDepartmentToQuery(query, filter, activeUser)
+        val queryWithAnonymousCondition = addAnonymousToQuery(queryWIthJoinAndDepartmentCondition, filter)
+        val queryWithAllConditions = addDateToQuery(queryWithAnonymousCondition, filter)
+        return queryWithAllConditions.fetch(feedbackMapper)
+    }
+
+    private fun addDepartmentToQuery(
+        query:
+        SelectJoinStep<Record>,
+        filter: Filter,
+        activeUser: ActiveUser,
+    ):
+            SelectConditionStep<Record> {
+        val employeeTable = EmployeesDao.EmployeesTable.instance
+
+        return filter.department?.let {
+            filter.isAnonymous?.let {
+                if (!filter.isAnonymous) {
+                    query.leftJoin(employeeTable).on(employeeTable.employeeId.eq(feedbackTables.employeeId))
+                        .where(employeeTable.department.eq(filter.department.toString().uppercase()))
+                        .and(feedbackTables.companyId.eq(activeUser.companyId))
+                } else null
+            }
+        } ?: query.where(feedbackTables.companyId.eq(activeUser.companyId))
+    }
+
+    private fun addAnonymousToQuery(
+        query:
+        SelectConditionStep<Record>, filter: Filter
+    ): SelectConditionStep<Record> {
+        return filter.isAnonymous?.let { query.and(if (filter.isAnonymous) feedbackTables.employeeId.isNull else feedbackTables.employeeId.isNotNull) }
+            ?: query
+    }
+
+    private fun addDateToQuery(
+        query:
+        SelectConditionStep<Record>, filter: Filter
+    ): SelectConditionStep<Record> {
+        return filter.date?.let { query.and(feedbackTables.creationDate.gt(filter.date)) } ?: query
+    }
 }

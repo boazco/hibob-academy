@@ -76,4 +76,17 @@ class FeedbackServiceTest {
         assertEquals("No feedback found  with that id", org.junit.jupiter.api.assertThrows<BadRequestException> { service.changeStatus(feedbackId,Status.UNREVIEWED, activeUser) }.message)
     }
 
+    @Test
+    fun `get status test`(){
+        whenever(feedbackDaoMock.getStatus(feedbackId, activeUser)).thenReturn(Status.UNREVIEWED)
+        assertEquals(Status.UNREVIEWED, service.getStatus(feedbackId, activeUser))
+    }
+
+    @Test
+    fun `filter feedbacks test`(){
+        val filter = Filter()
+        whenever(feedbackDaoMock.filterFeedbacks(filter, activeUser)).thenReturn(listOf<Feedback>())
+        assertEquals(listOf<Feedback>(), service.filterFeedbacks(filter, activeUser))
+    }
+
 }

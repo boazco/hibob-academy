@@ -24,10 +24,12 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
         return feedbackDao.getStatus(feedbackId, activeUser)
     }
 
+    fun filterFeedbacks(filter: Filter, activeUser: ActiveUser): List<Feedback>? {
+        return feedbackDao.filterFeedbacks(filter, activeUser)
+    }
+
     fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser) {
         if (feedbackDao.changeStatus(feedbackId, status, activeUser) == 0)
             throw BadRequestException("No feedback found  with that id")
     }
-
-
 }
