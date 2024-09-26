@@ -80,4 +80,41 @@ class FeedbackDao(private val sql: DSLContext) {
             .execute()
     }
 
+
+    fun filterFeedbacks(filter: Filter, activeUser: ActiveUser): List<Feedback>? {
+        val employeeTable = EmployeesDao.EmployeesTable.instance
+        val query = sql.select()
+            .from(feedbackTables)
+
+        val queryStage2 = filter.department?.let {
+            query.join(employeeTable)
+                .on(employeeTable.employeeId.eq(feedbackTables.employeeId))
+        } ?: query
+
+
+        val queryStage3 = queryStage2.where(feedbackTables.companyId.eq(activeUser.companyId))
+        val queryStage4 =
+            filter.isAnonymous?.let { queryStage3.and(if (filter.isAnonymous) feedbackTables.employeeId.isNotNull else feedbackTables.employeeId.isNull) }
+                ?: queryStage3
+
+        val queryStage5 =
+            filter.department?.let { queryStage4.and(employeeTable.department.eq(it.toString().uppercase())) }
+                ?: queryStage4
+
+        val queryStage6 =
+
+//        val queryStage4 = filter.
+//        val lastQuery = conditionQuery.and(conditions.reduce { acc, condition -> acc.and(condition) })
+//        return lastQuery.fetch(feedbackMapper)
+    }
+
+    /*
+            condition.isAnonymous?.let { conditionList.add(if (condition.isAnonymous) table.employeeId.isNotNull else table.employeeId.isNull) }
+        condition.date?.let { conditionList.add(table.creationDate.gt(condition.date)) }
+        condition.department?.let {
+            departmentCondition = true
+            conditionList.add(employeeTable.department.eq(condition.department.toString().uppercase()))
+        }
+     */
+
 }

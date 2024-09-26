@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class FeedbackService(private val feedbackDao: FeedbackDao, private val employeesDao: EmployeesDao) {
+class FeedbackService(private val feedbackDao: FeedbackDao) {
 
     fun createFeedback(feedbackInput: FeedbackInput, activeUser: ActiveUser): UUID {
         return feedbackDao.createFeedback(feedbackInput, activeUser)
@@ -22,6 +22,14 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
 
     fun getStatus(feedbackId: UUID, activeUser: ActiveUser): Status{
         return feedbackDao.getStatus(feedbackId, activeUser)
+    }
+
+    fun filterFeedbacks(condition: Filter, activeUser: ActiveUser): List<Feedback>? {
+        //all jOOQ related need to be in dao
+        val table = FeedbackTable.instance
+        val employeeTable = EmployeesDao.EmployeesTable.instance
+
+        return feedbackDao.filterFeedbacks(conditionList, departmentCondition, activeUser)
     }
 
     fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser) {

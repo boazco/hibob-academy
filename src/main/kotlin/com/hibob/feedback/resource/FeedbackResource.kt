@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Component
 import jakarta.ws.rs.core.MediaType
 import java.util.*
+import org.springframework.web.bind.annotation.RequestBody
 
 
 @Component
@@ -58,5 +59,15 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
     }
+
+    //to chang it to post so i can recive body
+    @POST
+    @Path("/v1/filterFeedbacks")
+    fun filterFeedbacks(@RequestBody filter: Filter, @Context activeUser: ActiveUser
+    ): Response {
+        throwIfNotAuthorized(activeUser)
+        return Response.ok(feedbackService.filterFeedbacks(filter, activeUser)).build()
+    }
+
 
 }
