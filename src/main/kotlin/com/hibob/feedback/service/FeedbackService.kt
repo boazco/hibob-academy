@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class FeedbackService(private val feedbackDao: FeedbackDao) {
+class FeedbackService(private val feedbackDao: FeedbackDao, private val employeesDao: EmployeesDao) {
 
     fun createFeedback(feedbackInput: FeedbackInput, activeUser: ActiveUser): UUID {
         return feedbackDao.createFeedback(feedbackInput, activeUser)
