@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.Response
 import org.springframework.stereotype.Component
 import jakarta.ws.rs.core.MediaType
-import java.sql.Date
 import java.util.*
 
 
@@ -58,19 +57,6 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
     @Path("/v1/getFeedbackStatus/{feedbackId}")
     fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
-    }
-
-    //to chang it to post so i can recive body
-    @GET
-    @Path("/v1/filterFeedbacks")
-    fun filterFeedbacks(
-        @QueryParam("isAnonymous") isAnonymous: Boolean? = null,
-        @QueryParam("department") department: Department? = null,
-        @QueryParam("date") date: Date? = null, @Context activeUser: ActiveUser
-    ): Response {
-        val filter = Filter(isAnonymous, department, date)
-        throwIfNotAuthorized(activeUser)
-        return Response.ok(feedbackService.filterFeedbacks(filter, activeUser)).build()
     }
 
 }

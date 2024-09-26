@@ -5,7 +5,6 @@ import com.hibob.feedback.dao.ActiveUser
 import com.hibob.feedback.dao.Feedback
 import com.hibob.feedback.dao.FeedbackInput
 import jakarta.ws.rs.BadRequestException
-import org.jooq.Condition
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -30,18 +29,5 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
             throw BadRequestException("No feedback found  with that id")
     }
 
-    fun filterFeedbacks(condition: Filter, activeUser: ActiveUser): List<Feedback>? {
-        //all jOOQ related need to be in dao
-        val table = FeedbackTable.instance
-        val employeeTable = EmployeesDao.EmployeesTable.instance
-        val conditionList = ArrayList<Condition>()
-        var departmentCondition = false
-        condition.isAnonymous?.let { conditionList.add(if (condition.isAnonymous) table.employeeId.isNotNull else table.employeeId.isNull) }
-        condition.date?.let { conditionList.add(table.creationDate.gt(condition.date)) }
-        condition.department?.let {
-            departmentCondition = true
-            conditionList.add(employeeTable.department.eq(condition.department.toString().uppercase()))
-        }
-        return feedbackDao.filterFeedbacks(conditionList, departmentCondition, activeUser)
-    }
+
 }
