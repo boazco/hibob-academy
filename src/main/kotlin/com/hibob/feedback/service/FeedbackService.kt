@@ -32,6 +32,4 @@ class FeedbackService(private val feedbackDao: FeedbackDao, private val employee
         if (feedbackDao.changeStatus(feedbackId, status, activeUser) == 0)
             throw BadRequestException("No feedback found  with that id")
     }
-
-
 }

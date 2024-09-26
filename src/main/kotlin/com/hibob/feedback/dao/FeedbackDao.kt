@@ -80,7 +80,6 @@ class FeedbackDao(private val sql: DSLContext) {
             .execute()
     }
 
-
     fun filterFeedbacks(filter: Filter, activeUser: ActiveUser): List<Feedback>? {
         val query = sql.select()
             .from(feedbackTables)
@@ -124,5 +123,4 @@ class FeedbackDao(private val sql: DSLContext) {
     ): SelectConditionStep<Record> {
         return filter.date?.let { query.and(feedbackTables.creationDate.gt(filter.date)) } ?: query
     }
-
 }
