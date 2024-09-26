@@ -16,6 +16,12 @@ data class FeedbackInput(
     val isAnonymous: Boolean
 )
 
+data class ResponseInput(
+    val feedbackId: UUID,
+    val responseMessage: String,
+    val employeeId: UUID
+)
+
 data class ActiveUser(
     val employeeId: UUID,
     val companyId: UUID,
