@@ -79,4 +79,5 @@ class FeedbackDao(private val sql: DSLContext) {
             .and(feedbackTables.companyId.eq(activeUser.companyId))
             .execute()
     }
+
 }
