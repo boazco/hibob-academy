@@ -24,12 +24,8 @@ class FeedbackService(private val feedbackDao: FeedbackDao) {
         return feedbackDao.getStatus(feedbackId, activeUser)
     }
 
-    fun filterFeedbacks(condition: Filter, activeUser: ActiveUser): List<Feedback>? {
-        //all jOOQ related need to be in dao
-        val table = FeedbackTable.instance
-        val employeeTable = EmployeesDao.EmployeesTable.instance
-
-        return feedbackDao.filterFeedbacks(conditionList, departmentCondition, activeUser)
+    fun filterFeedbacks(filter: Filter, activeUser: ActiveUser): List<Feedback>? {
+        return feedbackDao.filterFeedbacks(filter, activeUser)
     }
 
     fun changeStatus(feedbackId: UUID, status: Status, activeUser: ActiveUser) {

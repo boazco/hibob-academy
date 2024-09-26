@@ -56,15 +56,15 @@ class FeedbackResource(private val feedbackService: FeedbackService) {
 
     @GET
     @Path("/v1/getFeedbackStatus/{feedbackId}")
-    fun getStatus(activeUser: ActiveUser, @PathParam("feedbackId") feedbackId: UUID): Response {
+    fun getStatus(@Context requestContext: ContainerRequestContext, @PathParam("feedbackId") feedbackId: UUID): Response {
+        val activeUser = getActiveUserOrThrow(requestContext)
         return Response.ok(feedbackService.getStatus(feedbackId, activeUser)).build()
     }
 
-    //to chang it to post so i can recive body
     @POST
     @Path("/v1/filterFeedbacks")
-    fun filterFeedbacks(@RequestBody filter: Filter, @Context activeUser: ActiveUser
-    ): Response {
+    fun filterFeedbacks(@RequestBody filter: Filter, @Context requestContext: ContainerRequestContext): Response {
+        val activeUser = getActiveUserOrThrow(requestContext)
         throwIfNotAuthorized(activeUser)
         return Response.ok(feedbackService.filterFeedbacks(filter, activeUser)).build()
     }

@@ -87,14 +87,17 @@ class FeedbackDao(private val sql: DSLContext) {
             .from(feedbackTables)
 
         val queryStage2 = filter.department?.let {
-            query.join(employeeTable)
-                .on(employeeTable.employeeId.eq(feedbackTables.employeeId))
+            filter.isAnonymous?.let {
+                if (!filter.isAnonymous) {
+                    query.join(employeeTable).on(employeeTable.employeeId.eq(feedbackTables.employeeId))
+                } else query
+            } ?: query
         } ?: query
 
 
         val queryStage3 = queryStage2.where(feedbackTables.companyId.eq(activeUser.companyId))
         val queryStage4 =
-            filter.isAnonymous?.let { queryStage3.and(if (filter.isAnonymous) feedbackTables.employeeId.isNotNull else feedbackTables.employeeId.isNull) }
+            filter.isAnonymous?.let { queryStage3.and(if (filter.isAnonymous) feedbackTables.employeeId.isNull else feedbackTables.employeeId.isNotNull) }
                 ?: queryStage3
 
         val queryStage5 =
@@ -102,19 +105,8 @@ class FeedbackDao(private val sql: DSLContext) {
                 ?: queryStage4
 
         val queryStage6 =
-
-//        val queryStage4 = filter.
-//        val lastQuery = conditionQuery.and(conditions.reduce { acc, condition -> acc.and(condition) })
-//        return lastQuery.fetch(feedbackMapper)
+            filter.date?.let { queryStage5.and(feedbackTables.creationDate.gt(filter.date)) } ?: queryStage5
+        return queryStage6.fetch(feedbackMapper)
     }
-
-    /*
-            condition.isAnonymous?.let { conditionList.add(if (condition.isAnonymous) table.employeeId.isNotNull else table.employeeId.isNull) }
-        condition.date?.let { conditionList.add(table.creationDate.gt(condition.date)) }
-        condition.department?.let {
-            departmentCondition = true
-            conditionList.add(employeeTable.department.eq(condition.department.toString().uppercase()))
-        }
-     */
 
 }
